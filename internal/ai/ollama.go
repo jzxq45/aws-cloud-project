@@ -30,7 +30,7 @@ type generateResponse struct {
 func NewOllamaClient(baseURL, model string, httpClient *http.Client) *OllamaClient {
 	if httpClient == nil {
 		httpClient = &http.Client{
-			Timeout: 60 * time.Second,
+			Timeout: 120 * time.Second, // Даем нейросети время на раздумья
 		}
 	}
 	baseURL = strings.TrimRight(baseURL, "/")
