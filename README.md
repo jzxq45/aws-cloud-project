@@ -68,11 +68,11 @@ flowchart TD
 ## ✨ Key Features
 
 - **Clean Architecture & Dependency Injection:** Complete inversion of control. Handlers interact solely with interfaces (`UserRepository`, `LLMClient`, `DynamoDBAPI`), guaranteeing unit testability and maintainability without global state.
-- **Auto-generated UUIDs:** Серверная генерация ID (v4) через `github.com/google/uuid` для стандарта REST (клиенту не обязательно передавать `id`), возврат созданного ресурса со статусом `201 Created`.
-- **DoS Protection:** Ограничение размера входящих запросов (1 MB) через `http.MaxBytesReader` во всех хэндлерах для защиты от переполнения памяти.
-- **Structured Logging:** JSON-логи с использованием стандартного `log/slog` (Go 1.21+) с контекстными атрибутами, уровнями логирования и таймстемпами.
-- **High Cardinality Protection:** Использование `r.Pattern` (Go 1.22+) в метриках Prometheus для предотвращения взрыва кардинальности динамическими идентификаторами маршрутов.
-- **High Test Coverage (>80%):** Полное покрытие тестами (>80-100% по пакетам), проверка с `-race` детектором гонок и строгий статический анализ `golangci-lint` (0 замечаний).
+- **Auto-generated UUIDs:** Server-side UUID v4 generation via `github.com/google/uuid` following REST best practices (client ID is optional), returning the newly created resource with `201 Created`.
+- **DoS Protection:** Request body size limit (1 MB) enforced via `http.MaxBytesReader` across all endpoints to prevent memory exhaustion and DoS attacks.
+- **Structured Logging:** Standard library `log/slog` (Go 1.21+) JSON logging with contextual key-value attributes, log levels, and timestamps.
+- **High Cardinality Protection:** Uses Go 1.22+ `r.Pattern` routing templates in Prometheus metrics to prevent cardinality explosion from dynamic path IDs.
+- **High Test Coverage (>80%):** Comprehensive test suite across all packages (>80–100%), verified with data race detector (`-race`) and strict static analysis via `golangci-lint` (0 issues).
 - **Graceful Shutdown:** Zero-downtime server shutdown listening to OS signals (`SIGINT`, `SIGTERM`) with buffered timeout context.
 - **Prometheus Observability & Grafana:** Native middleware capturing request counts, latencies, HTTP methods, and status codes with automated provisioning.
 - **Resilient Multi-Stage Docker Build:** Minimal lightweight Alpine runtime image run as a non-root user (`UID 10001`).
