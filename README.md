@@ -68,10 +68,13 @@ flowchart TD
 ## ✨ Key Features
 
 - **Clean Architecture & Dependency Injection:** Complete inversion of control. Handlers interact solely with interfaces (`UserRepository`, `LLMClient`, `DynamoDBAPI`), guaranteeing unit testability and maintainability without global state.
+- **Auto-generated UUIDs:** Серверная генерация ID (v4) через `github.com/google/uuid` для стандарта REST (клиенту не обязательно передавать `id`), возврат созданного ресурса со статусом `201 Created`.
+- **DoS Protection:** Ограничение размера входящих запросов (1 MB) через `http.MaxBytesReader` во всех хэндлерах для защиты от переполнения памяти.
+- **Structured Logging:** JSON-логи с использованием стандартного `log/slog` (Go 1.21+) с контекстными атрибутами, уровнями логирования и таймстемпами.
+- **High Cardinality Protection:** Использование `r.Pattern` (Go 1.22+) в метриках Prometheus для предотвращения взрыва кардинальности динамическими идентификаторами маршрутов.
+- **High Test Coverage (>80%):** Полное покрытие тестами (>80-100% по пакетам), проверка с `-race` детектором гонок и строгий статический анализ `golangci-lint` (0 замечаний).
 - **Graceful Shutdown:** Zero-downtime server shutdown listening to OS signals (`SIGINT`, `SIGTERM`) with buffered timeout context.
-- **Enterprise-Grade Validation & Error Handling:** Explicit input validation, wrapping errors with `%w` for seamless `errors.Is` / `errors.As` inspection.
-- **High Test Coverage (>80%):** Full test suite with race detector (`-race`), covering table-driven HTTP handler tests, DynamoDB mock repositories, metrics middleware, and Ollama HTTP clients.
-- **Prometheus Observability:** Native middleware capturing request counts, latencies, HTTP methods, and status codes.
+- **Prometheus Observability & Grafana:** Native middleware capturing request counts, latencies, HTTP methods, and status codes with automated provisioning.
 - **Resilient Multi-Stage Docker Build:** Minimal lightweight Alpine runtime image run as a non-root user (`UID 10001`).
 
 ---
@@ -106,14 +109,19 @@ docker compose exec ollama ollama pull qwen2.5:3b
 ## 🧪 API Usage & Examples
 
 ### 1. Create User (`POST /users`)
+*ID is optional; if omitted, a UUID v4 is automatically generated:*
 ```bash
 curl -X POST http://localhost:8080/users \
   -H "Content-Type: application/json" \
-  -d '{"id":"usr-101", "name":"Senior Engineer", "email":"senior@cloud.local"}'
+  -d '{"name":"Senior Engineer", "email":"senior@cloud.local"}'
 ```
 *Response (`201 Created`):*
 ```json
-{"message":"User created"}
+{
+  "id": "96c3b099-f291-48eb-960a-8469843b21ec",
+  "name": "Senior Engineer",
+  "email": "senior@cloud.local"
+}
 ```
 
 ### 2. Get User By ID (`GET /users/{id}`)
