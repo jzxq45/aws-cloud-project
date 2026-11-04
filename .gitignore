@@ -1,0 +1,48 @@
+# Terraform
+**/.terraform/
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
+terraform/terraform.tfstate*
+.terraform.lock.hcl
+terraform/.terraform.lock.hcl
+*.lock.hcl
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Go binaries and build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+main
+api-server
+
+# Test coverage
+*.out
+coverage.out
+*.html
+
+# Local data & volume directories
+localstack_data/
+ollama_docker_data/
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

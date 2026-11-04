@@ -1,0 +1,43 @@
+services:
+  # Local AWS environment (LocalStack)
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,dynamodb
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:-}
+    volumes:
+      - D:/localstack_data:/var/lib/localstack
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:4566/_localstack/health\")' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  # Local LLM service (Ollama)
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - D:/ollama_docker_data:/root/.ollama
+
+  # Go API server
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Inside the Docker network, containers communicate using service names
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+      - OLLAMA_URL=http://ollama:11434
+    depends_on:
+      localstack:
+        condition: service_healthy
+      ollama:
+        condition: service_started
