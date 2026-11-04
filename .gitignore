@@ -40,6 +40,8 @@ coverage.out
 # Local data & volume directories
 localstack_data/
 ollama_docker_data/
+prometheus_data/
+grafana_data/
 
 # OS and Editor files
 .DS_Store

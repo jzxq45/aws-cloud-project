@@ -28,10 +28,11 @@ flowchart TD
         LLMClient["LLMClient Interface"]
     end
 
-    subgraph CloudInfra["☁️ Local Cloud & AI Services"]
+    subgraph CloudInfra["☁️ Local Cloud, AI & Observability"]
         LocalStack[("⚡ LocalStack (AWS DynamoDB)")]
         Ollama[("🦙 Ollama (Qwen 2.5 LLM)")]
         Prometheus[("📊 Prometheus Metrics Scraper")]
+        Grafana[("📈 Grafana Dashboards")]
     end
 
     Client -->|"HTTP Requests"| MetricsMW
@@ -39,6 +40,7 @@ flowchart TD
     Router -->|"POST /users, GET /users/{id}..."| UserHandler
     Router -->|"POST /ask"| AIHandler
     Router -->|"GET /metrics"| Prometheus
+    Prometheus -->|"Data Source Proxy"| Grafana
 
     UserHandler --> UserRepo
     UserRepo -->|"AWS SDK v2 (Put/Get/Update/Scan)"| LocalStack
@@ -155,6 +157,14 @@ curl -X POST http://localhost:8080/ask \
 ```bash
 curl -X GET http://localhost:8080/metrics
 ```
+
+### 8. Grafana Observability Dashboard
+- **URL:** [http://localhost:3000](http://localhost:3000)
+- **Login:** `admin` / `admin`
+- **Preconfigured Dashboard:** *AWS Cloud API Metrics* (`/d/aws-api-metrics/aws-cloud-api-metrics`)
+- **Metrics Tracked:**
+  - `http_requests_total` (RPS, Endpoint Breakdown, Status Codes)
+  - `http_request_duration_seconds` (p95 latency and average latency)
 
 ---
 
