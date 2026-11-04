@@ -86,3 +86,14 @@ func TestAIHandler_Ask_Success(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, expectedAnswer, resp["response"])
 }
+
+func TestAIHandler_Ask_PayloadTooLarge(t *testing.T) {
+	h := NewAIHandler(&MockLLMClient{})
+	largePrompt := `{"prompt":"` + string(make([]byte, 1024*1024+500)) + `"}`
+	req := httptest.NewRequest(http.MethodPost, "/ask", bytes.NewBufferString(largePrompt))
+	rec := httptest.NewRecorder()
+
+	h.Ask(rec, req)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+}

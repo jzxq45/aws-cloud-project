@@ -3,8 +3,7 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -22,6 +21,9 @@ import (
 )
 
 func main() {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	slog.SetDefault(logger)
+
 	ctx := context.Background()
 
 	cfg, err := config.LoadDefaultConfig(ctx,
@@ -32,7 +34,8 @@ func main() {
 		})),
 	)
 	if err != nil {
-		log.Fatalf("Config error: %v", err)
+		slog.Error("AWS config error", "error", err)
+		os.Exit(1)
 	}
 
 	endpoint := os.Getenv("AWS_ENDPOINT_URL")
@@ -64,7 +67,7 @@ func main() {
 
 	serverErrors := make(chan error, 1)
 	go func() {
-		fmt.Println("🚀 Server running on http://localhost:8080")
+		slog.Info("Server running", "addr", srv.Addr)
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			serverErrors <- err
 		}
@@ -75,16 +78,17 @@ func main() {
 
 	select {
 	case err := <-serverErrors:
-		log.Fatalf("Server startup error: %v", err)
+		slog.Error("Server startup error", "error", err)
+		os.Exit(1)
 	case sig := <-shutdown:
-		log.Printf("Received signal %v, initiating graceful shutdown...", sig)
+		slog.Info("Initiating graceful shutdown", "signal", sig.String())
 		ctxShutdown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
 		if err := srv.Shutdown(ctxShutdown); err != nil {
-			log.Printf("Graceful shutdown failed: %v", err)
+			slog.Error("Graceful shutdown failed", "error", err)
 			_ = srv.Close()
 		}
-		log.Println("Server stopped cleanly")
+		slog.Info("Server stopped cleanly")
 	}
 }

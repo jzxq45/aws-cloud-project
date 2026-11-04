@@ -73,13 +73,20 @@ func TestUserHandler_CreateUser_MalformedJSON(t *testing.T) {
 
 func TestUserHandler_CreateUser_MissingFields(t *testing.T) {
 	h := NewUserHandler(&MockUserRepository{})
-	req := httptest.NewRequest(http.MethodPost, "/users", bytes.NewBufferString(`{"id":"","name":"A","email":""}`))
-	rec := httptest.NewRecorder()
 
-	h.CreateUser(rec, req)
+	// Missing Name
+	req1 := httptest.NewRequest(http.MethodPost, "/users", bytes.NewBufferString(`{"name":"","email":"a@b.com"}`))
+	rec1 := httptest.NewRecorder()
+	h.CreateUser(rec1, req1)
+	assert.Equal(t, http.StatusBadRequest, rec1.Code)
+	assert.Contains(t, rec1.Body.String(), "Missing required fields")
 
-	assert.Equal(t, http.StatusBadRequest, rec.Code)
-	assert.Contains(t, rec.Body.String(), "Missing required fields")
+	// Missing Email
+	req2 := httptest.NewRequest(http.MethodPost, "/users", bytes.NewBufferString(`{"name":"Alice","email":""}`))
+	rec2 := httptest.NewRecorder()
+	h.CreateUser(rec2, req2)
+	assert.Equal(t, http.StatusBadRequest, rec2.Code)
+	assert.Contains(t, rec2.Body.String(), "Missing required fields")
 }
 
 func TestUserHandler_CreateUser_RepoError(t *testing.T) {
@@ -98,12 +105,14 @@ func TestUserHandler_CreateUser_RepoError(t *testing.T) {
 	assert.Contains(t, rec.Body.String(), "Failed to save to database")
 }
 
-func TestUserHandler_CreateUser_Success(t *testing.T) {
+func TestUserHandler_CreateUser_Success_ExplicitID(t *testing.T) {
 	called := false
 	mockRepo := &MockUserRepository{
 		CreateFunc: func(ctx context.Context, user model.User) error {
 			called = true
 			assert.Equal(t, "u1", user.ID)
+			assert.Equal(t, "A", user.Name)
+			assert.Equal(t, "a@b.com", user.Email)
 			return nil
 		},
 	}
@@ -115,6 +124,53 @@ func TestUserHandler_CreateUser_Success(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, rec.Code)
 	assert.True(t, called)
+
+	var created model.User
+	err := json.Unmarshal(rec.Body.Bytes(), &created)
+	require.NoError(t, err)
+	assert.Equal(t, "u1", created.ID)
+	assert.Equal(t, "A", created.Name)
+	assert.Equal(t, "a@b.com", created.Email)
+}
+
+func TestUserHandler_CreateUser_Success_AutoGeneratesUUID(t *testing.T) {
+	var capturedID string
+	mockRepo := &MockUserRepository{
+		CreateFunc: func(ctx context.Context, user model.User) error {
+			capturedID = user.ID
+			assert.NotEmpty(t, user.ID)
+			assert.Len(t, user.ID, 36) // standard UUID length
+			assert.Equal(t, "Alice", user.Name)
+			assert.Equal(t, "alice@example.com", user.Email)
+			return nil
+		},
+	}
+	h := NewUserHandler(mockRepo)
+	req := httptest.NewRequest(http.MethodPost, "/users", bytes.NewBufferString(`{"name":"Alice","email":"alice@example.com"}`))
+	rec := httptest.NewRecorder()
+
+	h.CreateUser(rec, req)
+
+	assert.Equal(t, http.StatusCreated, rec.Code)
+	assert.NotEmpty(t, capturedID)
+
+	var created model.User
+	err := json.Unmarshal(rec.Body.Bytes(), &created)
+	require.NoError(t, err)
+	assert.Equal(t, capturedID, created.ID)
+	assert.Equal(t, "Alice", created.Name)
+	assert.Equal(t, "alice@example.com", created.Email)
+}
+
+func TestUserHandler_CreateUser_PayloadTooLarge(t *testing.T) {
+	h := NewUserHandler(&MockUserRepository{})
+	largePayload := `{"name":"A","email":"a@b.com","extra":"` + string(make([]byte, 1024*1024+500)) + `"}`
+	req := httptest.NewRequest(http.MethodPost, "/users", bytes.NewBufferString(largePayload))
+	rec := httptest.NewRecorder()
+
+	h.CreateUser(rec, req)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
 }
 
 func TestUserHandler_GetUser_EmptyID(t *testing.T) {

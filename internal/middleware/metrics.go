@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -62,10 +63,15 @@ func (m *Metrics) Wrap(next http.Handler) http.Handler {
 		next.ServeHTTP(wrapped, r)
 
 		duration := time.Since(start).Seconds()
-		path := r.URL.Path
+		pattern := r.Pattern
+		if pattern == "" {
+			pattern = r.URL.Path
+		} else if _, rest, found := strings.Cut(pattern, " "); found {
+			pattern = rest
+		}
 
-		m.requestsTotal.WithLabelValues(r.Method, path, strconv.Itoa(wrapped.statusCode)).Inc()
-		m.requestDuration.WithLabelValues(r.Method, path).Observe(duration)
+		m.requestsTotal.WithLabelValues(r.Method, pattern, strconv.Itoa(wrapped.statusCode)).Inc()
+		m.requestDuration.WithLabelValues(r.Method, pattern).Observe(duration)
 	})
 }
 

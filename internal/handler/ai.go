@@ -2,7 +2,7 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
+	"log/slog"
 	"net/http"
 	"strings"
 
@@ -28,6 +28,7 @@ type askResponse struct {
 }
 
 func (h *AIHandler) Ask(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, 1024*1024)
 	var req askRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
@@ -42,13 +43,13 @@ func (h *AIHandler) Ask(w http.ResponseWriter, r *http.Request) {
 
 	answer, err := h.client.Generate(r.Context(), prompt)
 	if err != nil {
-		log.Printf("LLM Generate error: %v", err)
+		slog.Error("LLM Generate error", "error", err, "prompt_len", len(prompt))
 		http.Error(w, "Failed to generate response", http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(askResponse{Response: answer}); err != nil {
-		log.Printf("Failed to encode response: %v", err)
+		slog.Error("Failed to encode response", "error", err)
 	}
 }
