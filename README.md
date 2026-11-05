@@ -67,6 +67,7 @@ flowchart TD
 
 ## ✨ Key Features
 
+- **Embedded Web Console (`//go:embed`):** Single-binary distribution with zero external runtime dependencies. Serves a high-performance, dark-mode developer workbench on `GET /` inspired by Linear and Vercel.
 - **Clean Architecture & Dependency Injection:** Complete inversion of control. Handlers interact solely with interfaces (`UserRepository`, `LLMClient`, `DynamoDBAPI`), guaranteeing unit testability and maintainability without global state.
 - **Auto-generated UUIDs:** Server-side UUID v4 generation via `github.com/google/uuid` following REST best practices (client ID is optional), returning the newly created resource with `201 Created`.
 - **DoS Protection:** Request body size limit (1 MB) enforced via `http.MaxBytesReader` across all endpoints to prevent memory exhaustion and DoS attacks.
@@ -107,6 +108,9 @@ docker compose exec ollama ollama pull qwen2.5:3b
 ---
 
 ## 🧪 API Usage & Examples
+
+### 0. Web Workbench Dashboard (`GET /`)
+Open `http://localhost:8080` in your web browser to access the embedded Linear/Vercel-inspired developer console for visual user CRUD, real-time search, and AI assistant prompt execution.
 
 ### 1. Create User (`POST /users`)
 *ID is optional; if omitted, a UUID v4 is automatically generated:*

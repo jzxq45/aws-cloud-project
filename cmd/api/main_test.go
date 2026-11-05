@@ -9,6 +9,7 @@ import (
 	"aws-local-test/internal/handler"
 	"aws-local-test/internal/middleware"
 	"aws-local-test/internal/model"
+	"aws-local-test/web"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -84,4 +85,12 @@ func TestServerRouter_Wiring(t *testing.T) {
 	router.ServeHTTP(recList, reqList)
 	assert.Equal(t, http.StatusOK, recList.Code)
 	assert.Contains(t, recList.Body.String(), "t1@ex.com")
+
+	// Test GET / with web.Files
+	routerWithWeb := handler.NewRouter(userHandler, nil, middleware.NewMetrics(), web.Files)
+	reqRoot := httptest.NewRequest(http.MethodGet, "/", nil)
+	recRoot := httptest.NewRecorder()
+	routerWithWeb.ServeHTTP(recRoot, reqRoot)
+	assert.Equal(t, http.StatusOK, recRoot.Code)
+	assert.Contains(t, recRoot.Body.String(), "AWS Cloud Lab")
 }

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"testing/fstest"
 
 	"aws-local-test/internal/middleware"
 	"aws-local-test/internal/model"
@@ -433,4 +434,26 @@ func TestNewRouter(t *testing.T) {
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, req)
 	assert.Equal(t, http.StatusNotFound, rec.Code)
+}
+
+func TestNewRouter_WithStaticFS(t *testing.T) {
+	mockRepo := &MockUserRepository{}
+	h := NewUserHandler(mockRepo)
+	m := middleware.NewMetrics()
+
+	testFS := fstest.MapFS{
+		"index.html": &fstest.MapFile{
+			Data: []byte("<!DOCTYPE html><html><body><h1>Dashboard</h1></body></html>"),
+		},
+	}
+
+	router := NewRouter(h, nil, m, testFS)
+	require.NotNil(t, router)
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+	router.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Contains(t, rec.Body.String(), "Dashboard")
 }

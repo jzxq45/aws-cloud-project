@@ -14,6 +14,7 @@ import (
 	"aws-local-test/internal/handler"
 	"aws-local-test/internal/middleware"
 	dynamodbRepo "aws-local-test/internal/repository/dynamodb"
+	"aws-local-test/web"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -55,7 +56,7 @@ func main() {
 	userHandler := handler.NewUserHandler(userRepo)
 	ollamaClient := ai.NewOllamaClient(ollamaURL, "qwen2.5:3b", nil)
 	aiHandler := handler.NewAIHandler(ollamaClient)
-	router := handler.NewRouter(userHandler, aiHandler, metrics)
+	router := handler.NewRouter(userHandler, aiHandler, metrics, web.Files)
 
 	srv := &http.Server{
 		Addr:         ":8080",

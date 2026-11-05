@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"io/fs"
 	"log/slog"
 	"net/http"
 
@@ -151,7 +152,7 @@ func (h *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func NewRouter(h *UserHandler, aiH *AIHandler, m *middleware.Metrics) http.Handler {
+func NewRouter(h *UserHandler, aiH *AIHandler, m *middleware.Metrics, staticFS ...fs.FS) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /users", h.CreateUser)
 	mux.HandleFunc("GET /users/{id}", h.GetUser)
@@ -161,6 +162,13 @@ func NewRouter(h *UserHandler, aiH *AIHandler, m *middleware.Metrics) http.Handl
 
 	if aiH != nil {
 		mux.HandleFunc("POST /ask", aiH.Ask)
+	}
+
+	for _, f := range staticFS {
+		if f != nil {
+			mux.Handle("GET /", http.FileServerFS(f))
+			break
+		}
 	}
 
 	if m != nil {

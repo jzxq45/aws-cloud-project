@@ -35,7 +35,7 @@ api-server
 # Test coverage
 *.out
 coverage.out
-*.html
+coverage.html
 
 # Local data & volume directories
 localstack_data/

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AWS Cloud Lab Console • Workbench</title>
+  
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            app: {
+              bg: '#090A0C',
+              surface: '#101216',
+              elevated: '#16181E',
+              subtle: '#1C2027',
+              border: '#1F232B',
+              borderHover: '#2E3440',
+              accent: '#2563EB',
+              accentHover: '#1D4ED8',
+              accentSubtle: '#1E293B',
+              text: '#EDEDED',
+              secondary: '#8A8F98',
+              muted: '#5A606C',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    }
+    /* Thin custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1F232B;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2E3440;
+    }
+  </style>
+</head>
+<body class="bg-app-bg text-app-text min-h-screen flex flex-col font-sans text-sm selection:bg-blue-600/30 selection:text-blue-200 antialiased">
+
+  <!-- TOP APP BAR / HEADER (Compact Enterprise Style) -->
+  <header class="h-13 py-2.5 px-4 sm:px-6 border-b border-app-border bg-app-surface/90 sticky top-0 z-30 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <!-- Monogram Mark -->
+      <div class="w-7 h-7 rounded-md bg-app-elevated border border-app-border flex items-center justify-center font-mono font-semibold text-xs text-blue-400">
+        aws
+      </div>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-xs">
+        <span class="font-medium text-app-text">cloud-project</span>
+        <span class="text-app-muted">/</span>
+        <span class="text-app-secondary">workbench</span>
+        <span class="ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-app-elevated border border-app-border text-app-secondary">
+          v1.0
+        </span>
+      </div>
+    </div>
+
+    <!-- Center/Right System Telemetry & Links -->
+    <div class="flex items-center gap-2 sm:gap-4">
+      <!-- Environment Badges -->
+      <div class="hidden md:flex items-center gap-2 text-xs">
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-app-elevated border border-app-border text-app-secondary font-mono text-[11px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>API :8080</span>
+        </div>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-app-elevated border border-app-border text-app-secondary font-mono text-[11px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+          <span>DynamoDB</span>
+        </div>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-app-elevated border border-app-border text-app-secondary font-mono text-[11px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+          <span>Ollama 3B</span>
+        </div>
+      </div>
+
+      <!-- Quick External Links -->
+      <div class="flex items-center gap-1.5 text-xs border-l border-app-border pl-2 sm:pl-3">
+        <a
+          href="/metrics"
+          target="_blank"
+          title="Prometheus Metrics"
+          class="px-2 py-1 rounded text-app-secondary hover:text-app-text hover:bg-app-elevated transition-colors font-mono text-[11px]"
+        >
+          Metrics
+        </a>
+        <a
+          href="http://localhost:3000"
+          target="_blank"
+          title="Open Grafana Dashboards"
+          class="px-2 py-1 rounded text-app-secondary hover:text-app-text hover:bg-app-elevated transition-colors font-mono text-[11px]"
+        >
+          Grafana :3000
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 max-w-[1440px] w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+    <!-- LEFT COLUMN: Users & Database (7 cols) -->
+    <section class="lg:col-span-7 flex flex-col gap-5">
+
+      <!-- PANEL 1: Create User Form -->
+      <div class="bg-app-surface border border-app-border rounded-lg p-4 sm:p-5">
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-app-border">
+          <div>
+            <h2 class="text-xs font-semibold text-app-text uppercase tracking-wider">Create User</h2>
+            <p class="text-xs text-app-secondary mt-0.5">Generates UUID v4 and persists record to DynamoDB</p>
+          </div>
+          <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-app-elevated border border-app-border text-app-muted">
+            POST /users
+          </span>
+        </div>
+
+        <form id="createUserForm" class="space-y-3.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="userName" class="block text-xs font-medium text-app-secondary mb-1">Full Name</label>
+              <input
+                type="text"
+                id="userName"
+                required
+                placeholder="e.g. Alex Morgan"
+                class="w-full px-3 py-1.5 bg-app-elevated border border-app-border rounded-md text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+            <div>
+              <label for="userEmail" class="block text-xs font-medium text-app-secondary mb-1">Email Address</label>
+              <input
+                type="email"
+                id="userEmail"
+                required
+                placeholder="alex@company.com"
+                class="w-full px-3 py-1.5 bg-app-elevated border border-app-border rounded-md text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <span class="text-[11px] text-app-muted">Press <kbd class="px-1 py-0.5 rounded bg-app-elevated border border-app-border font-mono text-[10px]">Enter ↵</kbd> to submit</span>
+            <button
+              type="submit"
+              id="createUserBtn"
+              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Create User</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- PANEL 2: Users Database Table -->
+      <div class="bg-app-surface border border-app-border rounded-lg flex flex-col flex-1 overflow-hidden">
+        
+        <!-- Table Toolbar -->
+        <div class="p-3.5 sm:px-5 border-b border-app-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <h2 class="text-xs font-semibold text-app-text uppercase tracking-wider">Users Directory</h2>
+            <span id="userCountBadge" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-app-elevated border border-app-border text-app-secondary">
+              0 records
+            </span>
+          </div>
+
+          <!-- Search & Refresh Toolbar -->
+          <div class="flex items-center gap-2">
+            <div class="relative w-full sm:w-56">
+              <svg class="w-3.5 h-3.5 text-app-muted absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                id="searchUserInput"
+                placeholder="Filter by name, email, id..."
+                class="w-full pl-8 pr-2.5 py-1 bg-app-elevated border border-app-border rounded-md text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+
+            <button
+              id="refreshUsersBtn"
+              title="Refresh list from DynamoDB (R)"
+              class="p-1.5 rounded-md text-app-secondary hover:text-app-text hover:bg-app-elevated border border-app-border transition-colors flex items-center justify-center"
+            >
+              <svg id="refreshIcon" class="w-3.5 h-3.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Inline Error Banner (Hidden by default) -->
+        <div id="usersErrorBanner" class="hidden m-3 p-3 rounded-md bg-rose-950/40 border border-rose-900/60 text-xs text-rose-200 flex items-start justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span id="usersErrorText">Failed to communicate with DynamoDB.</span>
+          </div>
+          <button onclick="fetchUsers()" class="underline hover:no-underline text-rose-300 font-medium">Retry</button>
+        </div>
+
+        <!-- Table Body Container -->
+        <div class="overflow-x-auto flex-1">
+          <!-- Skeletons Loading State -->
+          <div id="usersLoading" class="p-4 space-y-2.5">
+            <div class="h-8 bg-app-elevated/70 rounded animate-pulse"></div>
+            <div class="h-8 bg-app-elevated/50 rounded animate-pulse"></div>
+            <div class="h-8 bg-app-elevated/30 rounded animate-pulse"></div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="usersEmpty" class="hidden py-14 px-4 flex flex-col items-center justify-center text-center">
+            <div class="w-9 h-9 rounded-md bg-app-elevated border border-app-border flex items-center justify-center text-app-muted mb-2.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+            </div>
+            <p class="text-xs font-medium text-app-text">No records found</p>
+            <p class="text-[11px] text-app-secondary mt-0.5 max-w-xs">Create your first user above or reset the filter search.</p>
+          </div>
+
+          <!-- Real Data Table -->
+          <table id="usersTable" class="w-full text-left text-xs hidden">
+            <thead>
+              <tr class="border-b border-app-border bg-app-elevated/40 text-app-muted font-mono text-[10px] uppercase tracking-wider">
+                <th class="py-2.5 px-4 font-medium">User</th>
+                <th class="py-2.5 px-4 font-medium">Email</th>
+                <th class="py-2.5 px-4 font-medium">UUID (v4)</th>
+                <th class="py-2.5 px-4 text-right font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody" class="divide-y divide-app-border/70 font-sans">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN: AI Workspace / Ollama (5 cols) -->
+    <section class="lg:col-span-5 flex flex-col gap-5">
+      <div class="bg-app-surface border border-app-border rounded-lg flex flex-col flex-1 p-4 sm:p-5">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3 mb-3.5 border-b border-app-border">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h2 class="text-xs font-semibold text-app-text uppercase tracking-wider">AI Assistant</h2>
+              <span class="px-1.5 py-0.2 rounded text-[10px] font-mono font-medium bg-blue-950/50 text-blue-400 border border-blue-900/40">
+                qwen2.5:3b
+              </span>
+            </div>
+            <p class="text-xs text-app-secondary mt-0.5">Local LLM inference via Ollama</p>
+          </div>
+          <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-app-elevated border border-app-border text-app-muted">
+            POST /ask
+          </span>
+        </div>
+
+        <!-- Quick Prompt Chips -->
+        <div class="mb-3">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium text-app-secondary">Templates</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" class="quick-chip text-[11px] px-2 py-1 rounded bg-app-elevated hover:bg-app-subtle border border-app-border text-app-secondary hover:text-app-text transition-colors">
+              Explain DynamoDB vs S3
+            </button>
+            <button type="button" class="quick-chip text-[11px] px-2 py-1 rounded bg-app-elevated hover:bg-app-subtle border border-app-border text-app-secondary hover:text-app-text transition-colors">
+              Write greeting for user
+            </button>
+            <button type="button" class="quick-chip text-[11px] px-2 py-1 rounded bg-app-elevated hover:bg-app-subtle border border-app-border text-app-secondary hover:text-app-text transition-colors">
+              System health audit
+            </button>
+          </div>
+        </div>
+
+        <!-- Prompt Input Form -->
+        <form id="aiForm" class="space-y-2.5 mb-4">
+          <div class="relative">
+            <textarea
+              id="aiPrompt"
+              rows="3"
+              required
+              placeholder="Ask anything or request SQL/DynamoDB scripts..."
+              class="w-full px-3 py-2 bg-app-elevated border border-app-border rounded-md text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-blue-500 transition-colors resize-none leading-relaxed"
+            ></textarea>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] text-app-muted flex items-center gap-1">
+              <kbd class="px-1 py-0.5 rounded bg-app-elevated border border-app-border font-mono text-[10px]">Ctrl + Enter</kbd>
+            </span>
+            <button
+              type="submit"
+              id="askAiBtn"
+              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg id="aiSubmitIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span>Execute</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Response Container / States -->
+        <div class="flex-1 flex flex-col min-h-[200px]">
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-app-border">
+            <span class="text-xs font-medium text-app-secondary">Output</span>
+            <div id="aiTimer" class="hidden text-[11px] font-mono text-app-secondary">
+              Latency: <span id="aiSeconds" class="text-app-text font-semibold">0</span>s
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div id="aiLoading" class="hidden flex-1 rounded-md bg-app-elevated/40 border border-app-border p-5 flex flex-col items-center justify-center gap-2 text-center">
+            <div class="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-xs font-medium text-app-text mt-1">Generating response...</p>
+            <p class="text-[11px] text-app-muted">Inference running locally on Ollama (Qwen2.5)</p>
+          </div>
+
+          <!-- Empty State -->
+          <div id="aiEmpty" class="flex-1 rounded-md bg-app-elevated/20 border border-app-border/60 p-5 flex flex-col items-center justify-center text-center text-app-muted">
+            <p class="text-xs">No active prompt execution.</p>
+            <p class="text-[11px] text-app-muted mt-0.5">Submit an instruction above to query the model.</p>
+          </div>
+
+          <!-- Response Viewer -->
+          <div id="aiResponseContainer" class="hidden flex-1 flex flex-col rounded-md bg-app-elevated/60 border border-app-border p-3.5">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-app-border text-[11px] text-app-muted">
+              <span class="font-mono text-emerald-400">200 OK</span>
+              <button
+                id="copyAiBtn"
+                type="button"
+                class="hover:text-app-text font-medium flex items-center gap-1 transition-colors"
+              >
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div id="aiResponseText" class="text-xs text-app-text font-sans leading-relaxed whitespace-pre-wrap overflow-y-auto max-h-72"></div>
+          </div>
+        </div>
+
+        <!-- Recent History Accordion -->
+        <div id="aiHistoryContainer" class="mt-3 pt-3 border-t border-app-border hidden">
+          <div class="text-[11px] font-medium text-app-muted mb-1.5 flex items-center justify-between">
+            <span>Recent queries:</span>
+            <span id="aiHistoryCount" class="font-mono text-[10px]">0</span>
+          </div>
+          <div id="aiHistoryList" class="flex flex-col gap-1 max-h-24 overflow-y-auto">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="h-10 px-4 sm:px-6 border-t border-app-border bg-app-surface text-[11px] text-app-muted flex items-center justify-between font-mono">
+    <div class="flex items-center gap-4">
+      <span>Status: <strong class="text-emerald-400 font-normal">All systems operational</strong></span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span>Single binary runtime</span>
+      <span>•</span>
+      <span>//go:embed</span>
+    </div>
+  </footer>
+
+  <!-- MINIMALIST NOTIFICATIONS (Sonner style) -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- CLIENT JAVASCRIPT -->
+  <script>
+    // State Store
+    let allUsers = [];
+    let queryHistory = [];
+    let timerInterval = null;
+    let timerSeconds = 0;
+
+    // Toast Notifications (Minimalist Enterprise Style)
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      const isSuccess = type === 'success';
+      const borderClass = isSuccess ? 'border-app-border bg-app-surface text-app-text' : 'border-rose-900/60 bg-rose-950/80 text-rose-200';
+      const indicatorColor = isSuccess ? 'bg-blue-500' : 'bg-rose-500';
+
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-3 py-2 rounded-md border shadow-lg text-xs font-medium transition-all duration-200 translate-y-2 opacity-0 ${borderClass}`;
+      toast.innerHTML = `
+        <span class="w-1.5 h-1.5 rounded-full ${indicatorColor} shrink-0"></span>
+        <span class="truncate max-w-sm">${escapeHtml(message)}</span>
+      `;
+      
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-1');
+        setTimeout(() => toast.remove(), 200);
+      }, 3500);
+    }
+
+    // Render User Table Rows
+    function renderUsers(users) {
+      const table = document.getElementById('usersTable');
+      const tbody = document.getElementById('usersTableBody');
+      const empty = document.getElementById('usersEmpty');
+      const badge = document.getElementById('userCountBadge');
+
+      badge.textContent = `${users.length} ${users.length === 1 ? 'record' : 'records'}`;
+
+      if (!users || users.length === 0) {
+        table.classList.add('hidden');
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      table.classList.remove('hidden');
+
+      tbody.innerHTML = users.map(user => {
+        const initial = (user.name || 'U').charAt(0).toUpperCase();
+        const shortId = user.id ? user.id.slice(0, 8) : '—';
+        return `
+          <tr class="hover:bg-app-elevated/40 transition-colors group">
+            <td class="py-2.5 px-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-6 h-6 rounded bg-app-elevated border border-app-border flex items-center justify-center text-[10px] font-semibold text-app-secondary">
+                  ${initial}
+                </div>
+                <span class="font-medium text-app-text">${escapeHtml(user.name || 'Unnamed')}</span>
+              </div>
+            </td>
+            <td class="py-2.5 px-4 text-app-secondary font-mono text-[11px]">
+              ${escapeHtml(user.email || '—')}
+            </td>
+            <td class="py-2.5 px-4">
+              <button
+                type="button"
+                onclick="copyToClipboard('${user.id}', 'UUID copied')"
+                title="Click to copy full UUID"
+                class="inline-flex items-center gap-1 font-mono text-[11px] text-app-muted hover:text-blue-400 bg-app-elevated px-1.5 py-0.5 rounded border border-app-border transition-colors"
+              >
+                <span>${shortId}...</span>
+                <svg class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </td>
+            <td class="py-2.5 px-4 text-right">
+              <button
+                type="button"
+                onclick="deleteUser('${user.id}')"
+                title="Delete record"
+                class="p-1 rounded text-app-muted hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Fetch Users from DynamoDB
+    async function fetchUsers() {
+      const loading = document.getElementById('usersLoading');
+      const table = document.getElementById('usersTable');
+      const empty = document.getElementById('usersEmpty');
+      const errorBanner = document.getElementById('usersErrorBanner');
+      const refreshIcon = document.getElementById('refreshIcon');
+
+      refreshIcon.classList.add('rotate-180');
+      loading.classList.remove('hidden');
+      table.classList.add('hidden');
+      empty.classList.add('hidden');
+      errorBanner.classList.add('hidden');
+
+      try {
+        const res = await fetch('/users');
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        allUsers = await res.json() || [];
+        renderUsers(allUsers);
+      } catch (err) {
+        document.getElementById('usersErrorText').textContent = `Database error: ${err.message}`;
+        errorBanner.classList.remove('hidden');
+      } finally {
+        loading.classList.add('hidden');
+        setTimeout(() => refreshIcon.classList.remove('rotate-180'), 400);
+      }
+    }
+
+    // Search / Filter Users
+    document.getElementById('searchUserInput').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        renderUsers(allUsers);
+        return;
+      }
+      const filtered = allUsers.filter(u => 
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        (u.id && u.id.toLowerCase().includes(q))
+      );
+      renderUsers(filtered);
+    });
+
+    // Create User Submit
+    document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('userName');
+      const emailInput = document.getElementById('userEmail');
+      const btn = document.getElementById('createUserBtn');
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      if (!name || !email) return;
+
+      btn.disabled = true;
+      try {
+        const res = await fetch('/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+
+        if (res.status === 201) {
+          const created = await res.json();
+          showToast(`User created: ${created.id.slice(0, 8)}...`);
+          nameInput.value = '';
+          emailInput.value = '';
+          fetchUsers();
+        } else {
+          const err = await res.text();
+          showToast(`Error: ${err || res.statusText}`, 'error');
+        }
+      } catch (err) {
+        showToast(`Network error: ${err.message}`, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // Delete User
+    async function deleteUser(id) {
+      if (!confirm(`Delete user ${id}?`)) return;
+      try {
+        const res = await fetch(`/users/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('User record deleted');
+          fetchUsers();
+        } else {
+          showToast(`Delete failed (HTTP ${res.status})`, 'error');
+        }
+      } catch (err) {
+        showToast(`Request failed: ${err.message}`, 'error');
+      }
+    }
+
+    // AI Query Execution
+    function startTimer() {
+      timerSeconds = 0;
+      const timerEl = document.getElementById('aiTimer');
+      const secondsEl = document.getElementById('aiSeconds');
+      secondsEl.textContent = '0';
+      timerEl.classList.remove('hidden');
+
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        secondsEl.textContent = timerSeconds;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function addToHistory(prompt, response) {
+      queryHistory.unshift({ prompt, response, time: new Date().toLocaleTimeString() });
+      if (queryHistory.length > 5) queryHistory.pop();
+
+      const container = document.getElementById('aiHistoryContainer');
+      const list = document.getElementById('aiHistoryList');
+      const count = document.getElementById('aiHistoryCount');
+
+      container.classList.remove('hidden');
+      count.textContent = queryHistory.length;
+
+      list.innerHTML = queryHistory.map((item, idx) => `
+        <button
+          type="button"
+          onclick="restoreHistory(${idx})"
+          class="text-left px-2 py-1 rounded bg-app-elevated/60 hover:bg-app-elevated border border-app-border text-[11px] text-app-secondary hover:text-app-text truncate transition-colors flex items-center justify-between"
+        >
+          <span class="truncate">${escapeHtml(item.prompt)}</span>
+          <span class="text-[10px] text-app-muted font-mono shrink-0 ml-2">${item.time}</span>
+        </button>
+      `).join('');
+    }
+
+    window.restoreHistory = function(idx) {
+      const item = queryHistory[idx];
+      if (!item) return;
+      document.getElementById('aiPrompt').value = item.prompt;
+      document.getElementById('aiResponseText').textContent = item.response;
+      document.getElementById('aiEmpty').classList.add('hidden');
+      document.getElementById('aiResponseContainer').classList.remove('hidden');
+    };
+
+    document.getElementById('aiForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const promptInput = document.getElementById('aiPrompt');
+      const btn = document.getElementById('askAiBtn');
+      const loading = document.getElementById('aiLoading');
+      const empty = document.getElementById('aiEmpty');
+      const container = document.getElementById('aiResponseContainer');
+      const responseText = document.getElementById('aiResponseText');
+
+      const prompt = promptInput.value.trim();
+      if (!prompt) return;
+
+      btn.disabled = true;
+      empty.classList.add('hidden');
+      container.classList.add('hidden');
+      loading.classList.remove('hidden');
+      startTimer();
+
+      try {
+        const res = await fetch('/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const answer = data.response || '(Empty response)';
+          responseText.textContent = answer;
+          loading.classList.add('hidden');
+          container.classList.remove('hidden');
+          addToHistory(prompt, answer);
+          showToast(`Inference completed in ${timerSeconds}s`);
+        } else {
+          const err = await res.text();
+          throw new Error(err || `HTTP ${res.status}`);
+        }
+      } catch (err) {
+        loading.classList.add('hidden');
+        empty.classList.remove('hidden');
+        showToast(`AI execution failed: ${err.message}`, 'error');
+      } finally {
+        stopTimer();
+        btn.disabled = false;
+      }
+    });
+
+    // Shortcut: Ctrl + Enter to submit AI form
+    document.getElementById('aiPrompt').addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('aiForm').requestSubmit();
+      }
+    });
+
+    // Quick chips handler
+    document.querySelectorAll('.quick-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const promptInput = document.getElementById('aiPrompt');
+        promptInput.value = btn.textContent.trim();
+        promptInput.focus();
+      });
+    });
+
+    // Copy to clipboard helper
+    window.copyToClipboard = function(text, successMsg = 'Copied to clipboard') {
+      if (!text) return;
+      navigator.clipboard.writeText(text);
+      showToast(successMsg);
+    };
+
+    document.getElementById('copyAiBtn').addEventListener('click', () => {
+      const text = document.getElementById('aiResponseText').textContent;
+      copyToClipboard(text, 'Response copied');
+    });
+
+    // Global keyboard shortcut: 'R' to refresh
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'r' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+        e.preventDefault();
+        fetchUsers();
+      }
+    });
+
+    document.getElementById('refreshUsersBtn').addEventListener('click', fetchUsers);
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Initial load
+    fetchUsers();
+  </script>
+</body>
+</html>

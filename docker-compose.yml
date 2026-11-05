@@ -9,6 +9,7 @@ services:
       - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:-}
     volumes:
       - D:/localstack_data:/var/lib/localstack
+      - ./localstack-init:/etc/localstack/init/ready.d:ro
     healthcheck:
       test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:4566/_localstack/health\")' || exit 1"]
       interval: 10s
