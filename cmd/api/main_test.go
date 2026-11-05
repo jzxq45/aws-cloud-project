@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -69,28 +71,52 @@ func TestServerRouter_Wiring(t *testing.T) {
 	}
 
 	userHandler := handler.NewUserHandler(mockRepo)
-	router := handler.NewRouter(userHandler, nil, middleware.NewMetrics())
+	authHandler := handler.NewAuthHandler()
+	authMiddleware := middleware.NewAuthMiddleware()
+	metrics := middleware.NewMetrics()
+
+	router := handler.NewRouter(userHandler, nil, authHandler, metrics, authMiddleware, web.Files)
 	require.NotNil(t, router)
 
-	// Test GET /users/{id}
-	reqGet := httptest.NewRequest(http.MethodGet, "/users/test-1", nil)
-	recGet := httptest.NewRecorder()
-	router.ServeHTTP(recGet, reqGet)
-	assert.Equal(t, http.StatusOK, recGet.Code)
-	assert.Contains(t, recGet.Body.String(), "test@example.com")
+	// Test GET / without auth (public static file)
+	reqRoot := httptest.NewRequest(http.MethodGet, "/", nil)
+	recRoot := httptest.NewRecorder()
+	router.ServeHTTP(recRoot, reqRoot)
+	assert.Equal(t, http.StatusOK, recRoot.Code)
+	assert.Contains(t, recRoot.Body.String(), "AWS Cloud Lab")
 
-	// Test GET /users
+	// Test GET /users without token -> 401 Unauthorized
+	reqListUnauth := httptest.NewRequest(http.MethodGet, "/users", nil)
+	recListUnauth := httptest.NewRecorder()
+	router.ServeHTTP(recListUnauth, reqListUnauth)
+	assert.Equal(t, http.StatusUnauthorized, recListUnauth.Code)
+
+	// Test POST /login -> 200 OK with token
+	loginBody := bytes.NewBufferString(`{"username":"admin","password":"admin"}`)
+	reqLogin := httptest.NewRequest(http.MethodPost, "/login", loginBody)
+	recLogin := httptest.NewRecorder()
+	router.ServeHTTP(recLogin, reqLogin)
+	assert.Equal(t, http.StatusOK, recLogin.Code)
+
+	var loginResp map[string]string
+	err := json.NewDecoder(recLogin.Body).Decode(&loginResp)
+	require.NoError(t, err)
+	token := loginResp["token"]
+	assert.NotEmpty(t, token)
+
+	// Test GET /users with valid Bearer token -> 200 OK
 	reqList := httptest.NewRequest(http.MethodGet, "/users", nil)
+	reqList.Header.Set("Authorization", "Bearer "+token)
 	recList := httptest.NewRecorder()
 	router.ServeHTTP(recList, reqList)
 	assert.Equal(t, http.StatusOK, recList.Code)
 	assert.Contains(t, recList.Body.String(), "t1@ex.com")
 
-	// Test GET / with web.Files
-	routerWithWeb := handler.NewRouter(userHandler, nil, middleware.NewMetrics(), web.Files)
-	reqRoot := httptest.NewRequest(http.MethodGet, "/", nil)
-	recRoot := httptest.NewRecorder()
-	routerWithWeb.ServeHTTP(recRoot, reqRoot)
-	assert.Equal(t, http.StatusOK, recRoot.Code)
-	assert.Contains(t, recRoot.Body.String(), "AWS Cloud Lab")
+	// Test GET /users/{id} with token -> 200 OK
+	reqGet := httptest.NewRequest(http.MethodGet, "/users/test-1", nil)
+	reqGet.Header.Set("Authorization", "Bearer "+token)
+	recGet := httptest.NewRecorder()
+	router.ServeHTTP(recGet, reqGet)
+	assert.Equal(t, http.StatusOK, recGet.Code)
+	assert.Contains(t, recGet.Body.String(), "test@example.com")
 }

@@ -23,18 +23,18 @@
           },
           colors: {
             app: {
-              bg: '#090A0C',
-              surface: '#101216',
-              elevated: '#16181E',
-              subtle: '#1C2027',
-              border: '#1F232B',
-              borderHover: '#2E3440',
-              accent: '#2563EB',
-              accentHover: '#1D4ED8',
-              accentSubtle: '#1E293B',
-              text: '#EDEDED',
-              secondary: '#8A8F98',
-              muted: '#5A606C',
+              bg: '#0B0D10',
+              surface: '#111419',
+              elevated: '#171B22',
+              input: '#0F1217',
+              border: '#252B34',
+              borderHover: '#374151',
+              accent: '#3B82F6',
+              accentHover: '#2563EB',
+              success: '#22C55E',
+              text: '#F1F5F9',
+              secondary: '#94A3B8',
+              muted: '#64748B',
             }
           }
         }
@@ -45,103 +45,120 @@
     body {
       font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     }
-    /* Thin custom scrollbar */
+    /* Sleek slim scrollbar */
     ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
+      width: 4px;
+      height: 4px;
     }
     ::-webkit-scrollbar-track {
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1F232B;
+      background: #252B34;
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #2E3440;
+      background: #374151;
     }
   </style>
 </head>
 <body class="bg-app-bg text-app-text min-h-screen flex flex-col font-sans text-sm selection:bg-blue-600/30 selection:text-blue-200 antialiased">
 
-  <!-- TOP APP BAR / HEADER (Compact Enterprise Style) -->
-  <header class="h-13 py-2.5 px-4 sm:px-6 border-b border-app-border bg-app-surface/90 sticky top-0 z-30 flex items-center justify-between gap-4">
+  <!-- TOP ENTERPRISE HEADER (Compact 48px) -->
+  <header class="h-12 px-4 sm:px-6 border-b border-app-border bg-app-surface sticky top-0 z-30 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
-      <!-- Monogram Mark -->
-      <div class="w-7 h-7 rounded-md bg-app-elevated border border-app-border flex items-center justify-center font-mono font-semibold text-xs text-blue-400">
-        aws
+      <!-- Minimalist Brand Mark -->
+      <div class="w-6 h-6 rounded bg-app-elevated border border-app-border flex items-center justify-center font-mono font-semibold text-[11px] text-app-accent">
+        CL
       </div>
 
       <!-- Breadcrumbs -->
       <div class="flex items-center gap-1.5 text-xs">
-        <span class="font-medium text-app-text">cloud-project</span>
+        <span class="font-semibold text-app-text tracking-tight">AWS Cloud Lab</span>
         <span class="text-app-muted">/</span>
-        <span class="text-app-secondary">workbench</span>
-        <span class="ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-app-elevated border border-app-border text-app-secondary">
-          v1.0
+        <span class="text-app-secondary">console</span>
+        <span class="ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-mono font-medium bg-app-elevated border border-app-border text-app-muted">
+          v1.2.0
         </span>
       </div>
     </div>
 
-    <!-- Center/Right System Telemetry & Links -->
+    <!-- Telemetry & Observability Badges -->
     <div class="flex items-center gap-2 sm:gap-4">
-      <!-- Environment Badges -->
-      <div class="hidden md:flex items-center gap-2 text-xs">
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-app-elevated border border-app-border text-app-secondary font-mono text-[11px]">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+      <div class="hidden md:flex items-center gap-2 text-xs font-mono">
+        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-app-elevated border border-app-border text-app-secondary text-[11px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-app-success"></span>
           <span>API :8080</span>
         </div>
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-app-elevated border border-app-border text-app-secondary font-mono text-[11px]">
-          <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-app-elevated border border-app-border text-app-secondary text-[11px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-app-accent"></span>
           <span>DynamoDB</span>
         </div>
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-app-elevated border border-app-border text-app-secondary font-mono text-[11px]">
+        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-app-elevated border border-app-border text-app-secondary text-[11px]">
           <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
           <span>Ollama 3B</span>
         </div>
       </div>
 
       <!-- Quick External Links -->
-      <div class="flex items-center gap-1.5 text-xs border-l border-app-border pl-2 sm:pl-3">
+      <div class="flex items-center gap-1 text-xs border-l border-app-border pl-2 sm:pl-3 font-mono">
         <a
           href="/metrics"
           target="_blank"
           title="Prometheus Metrics"
-          class="px-2 py-1 rounded text-app-secondary hover:text-app-text hover:bg-app-elevated transition-colors font-mono text-[11px]"
+          class="px-2 py-1 rounded text-app-secondary hover:text-app-text hover:bg-app-elevated transition-colors text-[11px]"
         >
           Metrics
         </a>
         <a
           href="http://localhost:3000"
           target="_blank"
-          title="Open Grafana Dashboards"
-          class="px-2 py-1 rounded text-app-secondary hover:text-app-text hover:bg-app-elevated transition-colors font-mono text-[11px]"
+          title="Grafana Observability Dashboard"
+          class="px-2 py-1 rounded text-app-secondary hover:text-app-text hover:bg-app-elevated transition-colors text-[11px]"
         >
-          Grafana :3000
+          Grafana
         </a>
+      </div>
+
+      <!-- Auth Session & Logout -->
+      <div class="flex items-center gap-1.5 border-l border-app-border pl-2 sm:pl-3 font-mono text-[11px]">
+        <div class="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded bg-app-elevated border border-app-border text-app-secondary">
+          <span class="w-1.5 h-1.5 rounded-full bg-app-success"></span>
+          <span>admin</span>
+        </div>
+        <button
+          id="logoutBtn"
+          title="Sign out from session"
+          class="px-2 py-0.5 rounded text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 border border-rose-900/50 transition-colors flex items-center gap-1"
+        >
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>Logout</span>
+        </button>
       </div>
     </div>
   </header>
 
   <!-- MAIN WORKSPACE -->
-  <main class="flex-1 max-w-[1440px] w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
+  <main class="flex-1 max-w-[1536px] w-full mx-auto p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
 
     <!-- LEFT COLUMN: Users & Database (7 cols) -->
-    <section class="lg:col-span-7 flex flex-col gap-5">
+    <section class="lg:col-span-7 flex flex-col gap-4">
 
-      <!-- PANEL 1: Create User Form -->
-      <div class="bg-app-surface border border-app-border rounded-lg p-4 sm:p-5">
-        <div class="flex items-center justify-between pb-3 mb-4 border-b border-app-border">
+      <!-- PANEL 1: Create User Form (Compact & High Density) -->
+      <div class="bg-app-surface border border-app-border rounded-lg p-4">
+        <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-app-border">
           <div>
             <h2 class="text-xs font-semibold text-app-text uppercase tracking-wider">Create User</h2>
-            <p class="text-xs text-app-secondary mt-0.5">Generates UUID v4 and persists record to DynamoDB</p>
+            <p class="text-xs text-app-secondary mt-0.5">Persists new record to AWS DynamoDB with UUID v4</p>
           </div>
-          <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-app-elevated border border-app-border text-app-muted">
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-app-elevated border border-app-border text-app-muted">
             POST /users
           </span>
         </div>
 
-        <form id="createUserForm" class="space-y-3.5">
+        <form id="createUserForm" class="space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label for="userName" class="block text-xs font-medium text-app-secondary mb-1">Full Name</label>
@@ -150,7 +167,7 @@
                 id="userName"
                 required
                 placeholder="e.g. Alex Morgan"
-                class="w-full px-3 py-1.5 bg-app-elevated border border-app-border rounded-md text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-blue-500 transition-colors"
+                class="w-full px-3 py-1.5 bg-app-input border border-app-border rounded text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-app-accent transition-colors"
               />
             </div>
             <div>
@@ -160,57 +177,58 @@
                 id="userEmail"
                 required
                 placeholder="alex@company.com"
-                class="w-full px-3 py-1.5 bg-app-elevated border border-app-border rounded-md text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-blue-500 transition-colors"
+                class="w-full px-3 py-1.5 bg-app-input border border-app-border rounded text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-app-accent transition-colors"
               />
             </div>
           </div>
 
-          <div class="flex items-center justify-between pt-1">
-            <span class="text-[11px] text-app-muted">Press <kbd class="px-1 py-0.5 rounded bg-app-elevated border border-app-border font-mono text-[10px]">Enter ↵</kbd> to submit</span>
+          <div class="flex items-center justify-between pt-0.5">
+            <span class="text-[11px] text-app-muted">Press <kbd class="px-1.5 py-0.5 rounded bg-app-elevated border border-app-border font-mono text-[10px] text-app-secondary">Enter ↵</kbd> to save</span>
             <button
               type="submit"
               id="createUserBtn"
-              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium bg-app-accent hover:bg-app-accentHover text-white transition-colors disabled:opacity-50"
             >
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
-              <span>Create User</span>
+              <span>Add User</span>
             </button>
           </div>
         </form>
       </div>
 
-      <!-- PANEL 2: Users Database Table -->
+      <!-- PANEL 2: Users Directory (Full Table with Search, Sort, Pagination) -->
       <div class="bg-app-surface border border-app-border rounded-lg flex flex-col flex-1 overflow-hidden">
         
-        <!-- Table Toolbar -->
-        <div class="p-3.5 sm:px-5 border-b border-app-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <!-- Toolbar: Title, Search, Refresh -->
+        <div class="p-3.5 border-b border-app-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="flex items-center gap-2">
             <h2 class="text-xs font-semibold text-app-text uppercase tracking-wider">Users Directory</h2>
             <span id="userCountBadge" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-app-elevated border border-app-border text-app-secondary">
-              0 records
+              0 users
             </span>
           </div>
 
-          <!-- Search & Refresh Toolbar -->
           <div class="flex items-center gap-2">
-            <div class="relative w-full sm:w-56">
+            <!-- Search Filter -->
+            <div class="relative w-full sm:w-60">
               <svg class="w-3.5 h-3.5 text-app-muted absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
                 type="text"
                 id="searchUserInput"
-                placeholder="Filter by name, email, id..."
-                class="w-full pl-8 pr-2.5 py-1 bg-app-elevated border border-app-border rounded-md text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-blue-500 transition-colors"
+                placeholder="Filter by name, email, ID..."
+                class="w-full pl-8 pr-2.5 py-1 bg-app-input border border-app-border rounded text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-app-accent transition-colors"
               />
             </div>
 
+            <!-- Refresh Button -->
             <button
               id="refreshUsersBtn"
-              title="Refresh list from DynamoDB (R)"
-              class="p-1.5 rounded-md text-app-secondary hover:text-app-text hover:bg-app-elevated border border-app-border transition-colors flex items-center justify-center"
+              title="Refresh list (R)"
+              class="p-1.5 rounded text-app-secondary hover:text-app-text hover:bg-app-elevated border border-app-border transition-colors flex items-center justify-center shrink-0"
             >
               <svg id="refreshIcon" class="w-3.5 h-3.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -219,8 +237,8 @@
           </div>
         </div>
 
-        <!-- Inline Error Banner (Hidden by default) -->
-        <div id="usersErrorBanner" class="hidden m-3 p-3 rounded-md bg-rose-950/40 border border-rose-900/60 text-xs text-rose-200 flex items-start justify-between gap-2">
+        <!-- Inline Error Banner -->
+        <div id="usersErrorBanner" class="hidden m-3 p-3 rounded bg-rose-950/40 border border-rose-900/60 text-xs text-rose-200 flex items-start justify-between gap-2">
           <div class="flex items-center gap-2">
             <svg class="w-4 h-4 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -230,34 +248,49 @@
           <button onclick="fetchUsers()" class="underline hover:no-underline text-rose-300 font-medium">Retry</button>
         </div>
 
-        <!-- Table Body Container -->
-        <div class="overflow-x-auto flex-1">
-          <!-- Skeletons Loading State -->
-          <div id="usersLoading" class="p-4 space-y-2.5">
-            <div class="h-8 bg-app-elevated/70 rounded animate-pulse"></div>
-            <div class="h-8 bg-app-elevated/50 rounded animate-pulse"></div>
-            <div class="h-8 bg-app-elevated/30 rounded animate-pulse"></div>
+        <!-- Table Viewport -->
+        <div class="overflow-x-auto flex-1 min-h-[220px]">
+          <!-- Skeletons Loading -->
+          <div id="usersLoading" class="p-3 space-y-2">
+            <div class="h-8 bg-app-elevated/80 rounded animate-pulse"></div>
+            <div class="h-8 bg-app-elevated/60 rounded animate-pulse"></div>
+            <div class="h-8 bg-app-elevated/40 rounded animate-pulse"></div>
           </div>
 
           <!-- Empty State -->
           <div id="usersEmpty" class="hidden py-14 px-4 flex flex-col items-center justify-center text-center">
-            <div class="w-9 h-9 rounded-md bg-app-elevated border border-app-border flex items-center justify-center text-app-muted mb-2.5">
+            <div class="w-8 h-8 rounded bg-app-elevated border border-app-border flex items-center justify-center text-app-muted mb-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
             </div>
-            <p class="text-xs font-medium text-app-text">No records found</p>
-            <p class="text-[11px] text-app-secondary mt-0.5 max-w-xs">Create your first user above or reset the filter search.</p>
+            <p class="text-xs font-medium text-app-text">No users found</p>
+            <p class="text-[11px] text-app-secondary mt-0.5 max-w-xs">Create a user above or adjust your search filter.</p>
           </div>
 
-          <!-- Real Data Table -->
+          <!-- Data Table with Sortable Columns -->
           <table id="usersTable" class="w-full text-left text-xs hidden">
             <thead>
-              <tr class="border-b border-app-border bg-app-elevated/40 text-app-muted font-mono text-[10px] uppercase tracking-wider">
-                <th class="py-2.5 px-4 font-medium">User</th>
-                <th class="py-2.5 px-4 font-medium">Email</th>
-                <th class="py-2.5 px-4 font-medium">UUID (v4)</th>
-                <th class="py-2.5 px-4 text-right font-medium">Actions</th>
+              <tr class="border-b border-app-border bg-app-elevated/50 text-app-muted font-mono text-[10px] uppercase tracking-wider select-none">
+                <th onclick="toggleSort('name')" class="py-2.5 px-4 font-medium cursor-pointer hover:text-app-text transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span>User</span>
+                    <span id="sortIcon-name" class="text-[11px] text-app-muted">↕</span>
+                  </div>
+                </th>
+                <th onclick="toggleSort('email')" class="py-2.5 px-4 font-medium cursor-pointer hover:text-app-text transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span>Email</span>
+                    <span id="sortIcon-email" class="text-[11px] text-app-muted">↕</span>
+                  </div>
+                </th>
+                <th onclick="toggleSort('id')" class="py-2.5 px-4 font-medium cursor-pointer hover:text-app-text transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span>UUID</span>
+                    <span id="sortIcon-id" class="text-[11px] text-app-muted">↕</span>
+                  </div>
+                </th>
+                <th class="py-2.5 px-4 text-right font-medium">Action</th>
               </tr>
             </thead>
             <tbody id="usersTableBody" class="divide-y divide-app-border/70 font-sans">
@@ -265,208 +298,388 @@
             </tbody>
           </table>
         </div>
+
+        <!-- Pagination Footer -->
+        <div id="usersPagination" class="p-2.5 sm:px-4 border-t border-app-border bg-app-elevated/30 flex items-center justify-between text-xs text-app-secondary">
+          <div class="flex items-center gap-2">
+            <span id="paginationRange" class="font-mono text-[11px]">Showing 0-0 of 0</span>
+          </div>
+
+          <div class="flex items-center gap-1">
+            <button
+              id="prevPageBtn"
+              onclick="changePage(-1)"
+              disabled
+              class="px-2.5 py-1 rounded border border-app-border bg-app-elevated hover:bg-app-surface text-app-secondary hover:text-app-text disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs"
+            >
+              Previous
+            </button>
+            <span id="pageIndicator" class="px-2 font-mono text-[11px] text-app-text">1 / 1</span>
+            <button
+              id="nextPageBtn"
+              onclick="changePage(1)"
+              disabled
+              class="px-2.5 py-1 rounded border border-app-border bg-app-elevated hover:bg-app-surface text-app-secondary hover:text-app-text disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
       </div>
     </section>
 
-    <!-- RIGHT COLUMN: AI Workspace / Ollama (5 cols) -->
-    <section class="lg:col-span-5 flex flex-col gap-5">
-      <div class="bg-app-surface border border-app-border rounded-lg flex flex-col flex-1 p-4 sm:p-5">
+    <!-- RIGHT COLUMN: AI Chat Assistant (5 cols) -->
+    <section class="lg:col-span-5 flex flex-col gap-4">
+      <div class="bg-app-surface border border-app-border rounded-lg flex flex-col flex-1 p-4 overflow-hidden h-full max-h-[calc(100vh-5rem)]">
         
-        <!-- Header -->
-        <div class="flex items-center justify-between pb-3 mb-3.5 border-b border-app-border">
-          <div>
-            <div class="flex items-center gap-1.5">
-              <h2 class="text-xs font-semibold text-app-text uppercase tracking-wider">AI Assistant</h2>
-              <span class="px-1.5 py-0.2 rounded text-[10px] font-mono font-medium bg-blue-950/50 text-blue-400 border border-blue-900/40">
-                qwen2.5:3b
-              </span>
-            </div>
-            <p class="text-xs text-app-secondary mt-0.5">Local LLM inference via Ollama</p>
-          </div>
-          <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-app-elevated border border-app-border text-app-muted">
-            POST /ask
-          </span>
-        </div>
-
-        <!-- Quick Prompt Chips -->
-        <div class="mb-3">
-          <div class="flex items-center justify-between mb-1.5">
-            <span class="text-[11px] font-medium text-app-secondary">Templates</span>
-          </div>
-          <div class="flex flex-wrap gap-1.5">
-            <button type="button" class="quick-chip text-[11px] px-2 py-1 rounded bg-app-elevated hover:bg-app-subtle border border-app-border text-app-secondary hover:text-app-text transition-colors">
-              Explain DynamoDB vs S3
-            </button>
-            <button type="button" class="quick-chip text-[11px] px-2 py-1 rounded bg-app-elevated hover:bg-app-subtle border border-app-border text-app-secondary hover:text-app-text transition-colors">
-              Write greeting for user
-            </button>
-            <button type="button" class="quick-chip text-[11px] px-2 py-1 rounded bg-app-elevated hover:bg-app-subtle border border-app-border text-app-secondary hover:text-app-text transition-colors">
-              System health audit
-            </button>
-          </div>
-        </div>
-
-        <!-- Prompt Input Form -->
-        <form id="aiForm" class="space-y-2.5 mb-4">
-          <div class="relative">
-            <textarea
-              id="aiPrompt"
-              rows="3"
-              required
-              placeholder="Ask anything or request SQL/DynamoDB scripts..."
-              class="w-full px-3 py-2 bg-app-elevated border border-app-border rounded-md text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-blue-500 transition-colors resize-none leading-relaxed"
-            ></textarea>
-          </div>
-
-          <div class="flex items-center justify-between">
-            <span class="text-[11px] text-app-muted flex items-center gap-1">
-              <kbd class="px-1 py-0.5 rounded bg-app-elevated border border-app-border font-mono text-[10px]">Ctrl + Enter</kbd>
+        <!-- Chat Header with Actions -->
+        <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-app-border">
+          <div class="flex items-center gap-2">
+            <h2 class="text-xs font-semibold text-app-text uppercase tracking-wider">AI Assistant</h2>
+            <span class="px-1.5 py-0.2 rounded text-[10px] font-mono font-medium bg-blue-950/60 text-blue-400 border border-blue-900/40">
+              qwen2.5:3b
             </span>
-            <button
-              type="submit"
-              id="askAiBtn"
-              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg id="aiSubmitIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </div>
+
+          <!-- Clear Chat Action -->
+          <button
+            id="clearChatBtn"
+            type="button"
+            title="Clear all messages in this session"
+            class="text-[11px] text-app-secondary hover:text-app-text hover:bg-app-elevated px-2 py-0.5 rounded border border-app-border transition-colors font-mono flex items-center gap-1"
+          >
+            <svg class="w-3 h-3 text-app-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Clear</span>
+          </button>
+        </div>
+
+        <!-- Template Chips (Horizontal Scrollable) -->
+        <div class="mb-2.5 flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] select-none">
+          <span class="text-app-muted shrink-0 text-[10px] font-mono uppercase">Prompts:</span>
+          <button type="button" class="quick-chip shrink-0 px-2 py-0.5 rounded bg-app-elevated hover:bg-app-border border border-app-border text-app-secondary hover:text-app-text transition-colors">
+            Explain DynamoDB vs S3
+          </button>
+          <button type="button" class="quick-chip shrink-0 px-2 py-0.5 rounded bg-app-elevated hover:bg-app-border border border-app-border text-app-secondary hover:text-app-text transition-colors">
+            Write welcome email
+          </button>
+          <button type="button" class="quick-chip shrink-0 px-2 py-0.5 rounded bg-app-elevated hover:bg-app-border border border-app-border text-app-secondary hover:text-app-text transition-colors">
+            Clean Architecture recap
+          </button>
+        </div>
+
+        <!-- Conversational Chat Stream (Message List) -->
+        <div id="chatMessageThread" class="flex-1 overflow-y-auto space-y-3 pr-1 min-h-[240px] max-h-[500px]">
+          
+          <!-- Empty Chat Welcome -->
+          <div id="chatEmptyState" class="py-12 px-4 flex flex-col items-center justify-center text-center">
+            <div class="w-8 h-8 rounded bg-app-elevated border border-app-border flex items-center justify-center text-app-accent mb-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-              <span>Execute</span>
-            </button>
+            </div>
+            <p class="text-xs font-semibold text-app-text">Local AI Chat Assistant</p>
+            <p class="text-[11px] text-app-secondary mt-0.5 max-w-xs">Ask queries, generate test datasets, or audit database architecture.</p>
+          </div>
+
+          <!-- Dynamic Chat Messages will be injected here -->
+        </div>
+
+        <!-- Generating Status Row (Active Thinking State) -->
+        <div id="chatGeneratingRow" class="hidden pt-2 border-t border-app-border flex items-center justify-between text-xs text-app-secondary font-mono">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-app-accent animate-ping"></span>
+            <span class="text-app-text font-medium text-[11px]">Ollama generating response...</span>
+          </div>
+          <span class="text-[11px] text-app-muted">Elapsed: <strong id="chatTimerSeconds" class="text-app-accent font-mono">0</strong>s</span>
+        </div>
+
+        <!-- Chat Input Form -->
+        <form id="chatForm" class="mt-2.5 pt-2.5 border-t border-app-border">
+          <div class="relative bg-app-input border border-app-border rounded focus-within:border-app-accent transition-colors">
+            <textarea
+              id="chatInput"
+              rows="2"
+              required
+              placeholder="Ask anything (Enter to send, Shift+Enter for newline)..."
+              class="w-full px-3 py-2 bg-transparent text-xs text-app-text placeholder:text-app-muted focus:outline-none resize-none leading-relaxed"
+            ></textarea>
+
+            <div class="px-2.5 pb-2 flex items-center justify-between text-[11px]">
+              <span class="text-app-muted font-mono text-[10px]">Enter ↵ to send</span>
+              <button
+                type="submit"
+                id="chatSendBtn"
+                class="inline-flex items-center gap-1 px-3 py-1 rounded bg-app-accent hover:bg-app-accentHover text-white font-medium text-xs transition-colors disabled:opacity-40"
+              >
+                <span>Send</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+            </div>
           </div>
         </form>
 
-        <!-- Response Container / States -->
-        <div class="flex-1 flex flex-col min-h-[200px]">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-app-border">
-            <span class="text-xs font-medium text-app-secondary">Output</span>
-            <div id="aiTimer" class="hidden text-[11px] font-mono text-app-secondary">
-              Latency: <span id="aiSeconds" class="text-app-text font-semibold">0</span>s
-            </div>
-          </div>
-
-          <!-- Loading State -->
-          <div id="aiLoading" class="hidden flex-1 rounded-md bg-app-elevated/40 border border-app-border p-5 flex flex-col items-center justify-center gap-2 text-center">
-            <div class="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <p class="text-xs font-medium text-app-text mt-1">Generating response...</p>
-            <p class="text-[11px] text-app-muted">Inference running locally on Ollama (Qwen2.5)</p>
-          </div>
-
-          <!-- Empty State -->
-          <div id="aiEmpty" class="flex-1 rounded-md bg-app-elevated/20 border border-app-border/60 p-5 flex flex-col items-center justify-center text-center text-app-muted">
-            <p class="text-xs">No active prompt execution.</p>
-            <p class="text-[11px] text-app-muted mt-0.5">Submit an instruction above to query the model.</p>
-          </div>
-
-          <!-- Response Viewer -->
-          <div id="aiResponseContainer" class="hidden flex-1 flex flex-col rounded-md bg-app-elevated/60 border border-app-border p-3.5">
-            <div class="flex items-center justify-between pb-2 mb-2 border-b border-app-border text-[11px] text-app-muted">
-              <span class="font-mono text-emerald-400">200 OK</span>
-              <button
-                id="copyAiBtn"
-                type="button"
-                class="hover:text-app-text font-medium flex items-center gap-1 transition-colors"
-              >
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                </svg>
-                <span>Copy</span>
-              </button>
-            </div>
-            <div id="aiResponseText" class="text-xs text-app-text font-sans leading-relaxed whitespace-pre-wrap overflow-y-auto max-h-72"></div>
-          </div>
-        </div>
-
-        <!-- Recent History Accordion -->
-        <div id="aiHistoryContainer" class="mt-3 pt-3 border-t border-app-border hidden">
-          <div class="text-[11px] font-medium text-app-muted mb-1.5 flex items-center justify-between">
-            <span>Recent queries:</span>
-            <span id="aiHistoryCount" class="font-mono text-[10px]">0</span>
-          </div>
-          <div id="aiHistoryList" class="flex flex-col gap-1 max-h-24 overflow-y-auto">
-            <!-- Injected dynamically -->
-          </div>
-        </div>
-
       </div>
     </section>
+
   </main>
 
-  <!-- FOOTER -->
-  <footer class="h-10 px-4 sm:px-6 border-t border-app-border bg-app-surface text-[11px] text-app-muted flex items-center justify-between font-mono">
-    <div class="flex items-center gap-4">
-      <span>Status: <strong class="text-emerald-400 font-normal">All systems operational</strong></span>
-    </div>
+  <!-- COMPACT FOOTER -->
+  <footer class="h-9 px-4 sm:px-6 border-t border-app-border bg-app-surface text-[11px] text-app-secondary flex items-center justify-between font-mono">
     <div class="flex items-center gap-3">
-      <span>Single binary runtime</span>
+      <span class="flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-app-success"></span>
+        <span class="text-app-text">Systems Operational</span>
+      </span>
+      <span class="text-app-border">|</span>
+      <span>LocalStack DynamoDB</span>
+    </div>
+    <div class="flex items-center gap-3 text-app-muted">
+      <span>//go:embed static assets</span>
       <span>•</span>
-      <span>//go:embed</span>
+      <span>Port :8080</span>
     </div>
   </footer>
+
+  <!-- AUTHENTICATION LOCKSCREEN OVERLAY -->
+  <div id="authOverlay" class="fixed inset-0 z-50 bg-[#0B0D10]/95 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-app-surface border border-app-border rounded-lg p-5 shadow-2xl space-y-4">
+      <div class="flex items-center gap-3 pb-3 border-b border-app-border">
+        <div class="w-8 h-8 rounded bg-app-elevated border border-app-border flex items-center justify-center font-mono font-semibold text-xs text-app-accent">
+          CL
+        </div>
+        <div>
+          <h1 class="text-sm font-semibold text-app-text tracking-tight">AWS Cloud Lab Console</h1>
+          <p class="text-xs text-app-secondary">Enterprise JWT Authentication</p>
+        </div>
+      </div>
+
+      <!-- Error Alert -->
+      <div id="authErrorMsg" class="hidden p-2.5 rounded bg-rose-950/50 border border-rose-900/70 text-xs text-rose-200 flex items-center gap-2">
+        <svg class="w-3.5 h-3.5 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span id="authErrorText">Invalid username or password</span>
+      </div>
+
+      <form id="loginForm" class="space-y-3">
+        <div>
+          <label for="loginUsername" class="block text-xs font-medium text-app-secondary mb-1">Username</label>
+          <input
+            type="text"
+            id="loginUsername"
+            required
+            value="admin"
+            placeholder="admin"
+            class="w-full px-3 py-1.5 bg-app-input border border-app-border rounded text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-app-accent transition-colors font-mono"
+          />
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label for="loginPassword" class="block text-xs font-medium text-app-secondary">Password</label>
+            <span class="text-[10px] text-app-muted font-mono">admin</span>
+          </div>
+          <input
+            type="password"
+            id="loginPassword"
+            required
+            value="admin"
+            placeholder="••••••••"
+            class="w-full px-3 py-1.5 bg-app-input border border-app-border rounded text-xs text-app-text placeholder:text-app-muted focus:outline-none focus:border-app-accent transition-colors font-mono"
+          />
+        </div>
+
+        <button
+          type="submit"
+          id="loginSubmitBtn"
+          class="w-full py-2 rounded text-xs font-medium bg-app-accent hover:bg-app-accentHover text-white transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+          </svg>
+          <span>Sign In</span>
+        </button>
+      </form>
+
+      <div class="text-[11px] text-app-muted font-mono text-center pt-1 border-t border-app-border/50">
+        Default credentials: <code class="text-app-secondary">admin</code> / <code class="text-app-secondary">admin</code>
+      </div>
+    </div>
+  </div>
 
   <!-- MINIMALIST NOTIFICATIONS (Sonner style) -->
   <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- CLIENT JAVASCRIPT -->
+  <!-- APPLICATION JAVASCRIPT -->
   <script>
-    // State Store
+    // --- Application State ---
     let allUsers = [];
-    let queryHistory = [];
-    let timerInterval = null;
-    let timerSeconds = 0;
+    let filteredUsers = [];
+    let sortColumn = 'name';
+    let sortDirection = 'asc';
+    let currentPage = 1;
+    const pageSize = 5;
 
-    // Toast Notifications (Minimalist Enterprise Style)
+    // Chat Message Thread Storage (Session)
+    let chatMessages = [];
+    let chatTimerInterval = null;
+    let chatTimerSeconds = 0;
+
+    // --- JWT Authenticated Fetch Wrapper ---
+    async function authFetch(url, options = {}) {
+      const token = localStorage.getItem('jwt_token');
+      options.headers = options.headers || {};
+      if (token) {
+        if (options.headers instanceof Headers) {
+          options.headers.set('Authorization', `Bearer ${token}`);
+        } else {
+          options.headers['Authorization'] = `Bearer ${token}`;
+        }
+      }
+
+      const res = await fetch(url, options);
+      if (res.status === 401) {
+        localStorage.removeItem('jwt_token');
+        document.getElementById('authOverlay').classList.remove('hidden');
+        showToast('Session expired or unauthorized (401)', 'error');
+      }
+      return res;
+    }
+
+    // --- Toast Notifications ---
     function showToast(message, type = 'success') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
       
       const isSuccess = type === 'success';
-      const borderClass = isSuccess ? 'border-app-border bg-app-surface text-app-text' : 'border-rose-900/60 bg-rose-950/80 text-rose-200';
-      const indicatorColor = isSuccess ? 'bg-blue-500' : 'bg-rose-500';
+      const borderClass = isSuccess ? 'border-app-border bg-app-surface text-app-text' : 'border-rose-900/70 bg-rose-950/80 text-rose-200';
+      const dotColor = isSuccess ? 'bg-app-accent' : 'bg-rose-500';
 
-      toast.className = `pointer-events-auto flex items-center gap-2.5 px-3 py-2 rounded-md border shadow-lg text-xs font-medium transition-all duration-200 translate-y-2 opacity-0 ${borderClass}`;
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-3 py-2 rounded border shadow-lg text-xs font-medium transition-all duration-200 translate-y-2 opacity-0 ${borderClass}`;
       toast.innerHTML = `
-        <span class="w-1.5 h-1.5 rounded-full ${indicatorColor} shrink-0"></span>
+        <span class="w-1.5 h-1.5 rounded-full ${dotColor} shrink-0"></span>
         <span class="truncate max-w-sm">${escapeHtml(message)}</span>
       `;
       
       container.appendChild(toast);
-      
-      requestAnimationFrame(() => {
-        toast.classList.remove('translate-y-2', 'opacity-0');
-      });
+      requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
 
       setTimeout(() => {
         toast.classList.add('opacity-0', 'translate-y-1');
         setTimeout(() => toast.remove(), 200);
-      }, 3500);
+      }, 3200);
     }
 
-    // Render User Table Rows
-    function renderUsers(users) {
+    // --- Users Table Sorting & Filtering & Pagination ---
+    function applySortAndFilter() {
+      const query = document.getElementById('searchUserInput').value.toLowerCase().trim();
+      
+      // Filter
+      if (!query) {
+        filteredUsers = [...allUsers];
+      } else {
+        filteredUsers = allUsers.filter(u => 
+          (u.name && u.name.toLowerCase().includes(query)) ||
+          (u.email && u.email.toLowerCase().includes(query)) ||
+          (u.id && u.id.toLowerCase().includes(query))
+        );
+      }
+
+      // Sort
+      filteredUsers.sort((a, b) => {
+        let valA = (a[sortColumn] || '').toLowerCase();
+        let valB = (b[sortColumn] || '').toLowerCase();
+        if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      // Update Sort Header Icons
+      ['name', 'email', 'id'].forEach(col => {
+        const icon = document.getElementById(`sortIcon-${col}`);
+        if (icon) {
+          if (sortColumn === col) {
+            icon.textContent = sortDirection === 'asc' ? '↑' : '↓';
+            icon.className = 'text-[11px] text-app-accent font-bold';
+          } else {
+            icon.textContent = '↕';
+            icon.className = 'text-[11px] text-app-muted';
+          }
+        }
+      });
+
+      // Adjust Pagination
+      const totalPages = Math.ceil(filteredUsers.length / pageSize) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      renderTable();
+    }
+
+    function toggleSort(column) {
+      if (sortColumn === column) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortColumn = column;
+        sortDirection = 'asc';
+      }
+      applySortAndFilter();
+    }
+
+    function changePage(direction) {
+      currentPage += direction;
+      applySortAndFilter();
+    }
+
+    function renderTable() {
       const table = document.getElementById('usersTable');
       const tbody = document.getElementById('usersTableBody');
       const empty = document.getElementById('usersEmpty');
       const badge = document.getElementById('userCountBadge');
+      const rangeEl = document.getElementById('paginationRange');
+      const pageIndicator = document.getElementById('pageIndicator');
+      const prevBtn = document.getElementById('prevPageBtn');
+      const nextBtn = document.getElementById('nextPageBtn');
 
-      badge.textContent = `${users.length} ${users.length === 1 ? 'record' : 'records'}`;
+      const total = filteredUsers.length;
+      badge.textContent = `${allUsers.length} ${allUsers.length === 1 ? 'user' : 'users'}`;
 
-      if (!users || users.length === 0) {
+      if (total === 0) {
         table.classList.add('hidden');
         empty.classList.remove('hidden');
+        rangeEl.textContent = 'Showing 0 of 0';
+        pageIndicator.textContent = '1 / 1';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
         return;
       }
 
       empty.classList.add('hidden');
       table.classList.remove('hidden');
 
-      tbody.innerHTML = users.map(user => {
+      const totalPages = Math.ceil(total / pageSize) || 1;
+      const startIdx = (currentPage - 1) * pageSize;
+      const endIdx = Math.min(startIdx + pageSize, total);
+      const pageItems = filteredUsers.slice(startIdx, endIdx);
+
+      rangeEl.textContent = `Showing ${startIdx + 1}–${endIdx} of ${total}`;
+      pageIndicator.textContent = `${currentPage} / ${totalPages}`;
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= totalPages;
+
+      tbody.innerHTML = pageItems.map(user => {
         const initial = (user.name || 'U').charAt(0).toUpperCase();
         const shortId = user.id ? user.id.slice(0, 8) : '—';
         return `
           <tr class="hover:bg-app-elevated/40 transition-colors group">
             <td class="py-2.5 px-4">
-              <div class="flex items-center gap-2.5">
-                <div class="w-6 h-6 rounded bg-app-elevated border border-app-border flex items-center justify-center text-[10px] font-semibold text-app-secondary">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded bg-app-elevated border border-app-border flex items-center justify-center text-[10px] font-semibold text-app-accent">
                   ${initial}
                 </div>
                 <span class="font-medium text-app-text">${escapeHtml(user.name || 'Unnamed')}</span>
@@ -475,15 +688,15 @@
             <td class="py-2.5 px-4 text-app-secondary font-mono text-[11px]">
               ${escapeHtml(user.email || '—')}
             </td>
-            <td class="py-2.5 px-4">
+            <td class="py-2.5 px-4 font-mono">
               <button
                 type="button"
                 onclick="copyToClipboard('${user.id}', 'UUID copied')"
                 title="Click to copy full UUID"
-                class="inline-flex items-center gap-1 font-mono text-[11px] text-app-muted hover:text-blue-400 bg-app-elevated px-1.5 py-0.5 rounded border border-app-border transition-colors"
+                class="inline-flex items-center gap-1 text-[11px] text-app-secondary hover:text-app-accent bg-app-elevated hover:bg-app-input px-1.5 py-0.5 rounded border border-app-border transition-colors"
               >
                 <span>${shortId}...</span>
-                <svg class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3 h-3 text-app-muted group-hover:text-app-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
               </button>
@@ -492,7 +705,7 @@
               <button
                 type="button"
                 onclick="deleteUser('${user.id}')"
-                title="Delete record"
+                title="Delete user"
                 class="p-1 rounded text-app-muted hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -505,7 +718,7 @@
       }).join('');
     }
 
-    // Fetch Users from DynamoDB
+    // --- Fetch Users API Call ---
     async function fetchUsers() {
       const loading = document.getElementById('usersLoading');
       const table = document.getElementById('usersTable');
@@ -520,14 +733,12 @@
       errorBanner.classList.add('hidden');
 
       try {
-        const res = await fetch('/users');
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-        }
+        const res = await authFetch('/users');
+        if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         allUsers = await res.json() || [];
-        renderUsers(allUsers);
+        applySortAndFilter();
       } catch (err) {
-        document.getElementById('usersErrorText').textContent = `Database error: ${err.message}`;
+        document.getElementById('usersErrorText').textContent = `DynamoDB Error: ${err.message}`;
         errorBanner.classList.remove('hidden');
       } finally {
         loading.classList.add('hidden');
@@ -535,22 +746,13 @@
       }
     }
 
-    // Search / Filter Users
-    document.getElementById('searchUserInput').addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase().trim();
-      if (!q) {
-        renderUsers(allUsers);
-        return;
-      }
-      const filtered = allUsers.filter(u => 
-        (u.name && u.name.toLowerCase().includes(q)) ||
-        (u.email && u.email.toLowerCase().includes(q)) ||
-        (u.id && u.id.toLowerCase().includes(q))
-      );
-      renderUsers(filtered);
+    // --- Search Input Listener ---
+    document.getElementById('searchUserInput').addEventListener('input', () => {
+      currentPage = 1;
+      applySortAndFilter();
     });
 
-    // Create User Submit
+    // --- Create User Form Handler ---
     document.getElementById('createUserForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const nameInput = document.getElementById('userName');
@@ -563,15 +765,15 @@
 
       btn.disabled = true;
       try {
-        const res = await fetch('/users', {
+        const res = await authFetch('/users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email })
         });
 
         if (res.status === 201) {
-          const created = await res.json();
-          showToast(`User created: ${created.id.slice(0, 8)}...`);
+          const user = await res.json();
+          showToast(`User created: ${user.id.slice(0, 8)}...`);
           nameInput.value = '';
           emailInput.value = '';
           fetchUsers();
@@ -586,92 +788,114 @@
       }
     });
 
-    // Delete User
+    // --- Delete User Handler ---
     async function deleteUser(id) {
-      if (!confirm(`Delete user ${id}?`)) return;
+      if (!confirm(`Permanently delete user ${id}?`)) return;
       try {
-        const res = await fetch(`/users/${id}`, { method: 'DELETE' });
+        const res = await authFetch(`/users/${id}`, { method: 'DELETE' });
         if (res.ok) {
           showToast('User record deleted');
           fetchUsers();
         } else {
-          showToast(`Delete failed (HTTP ${res.status})`, 'error');
+          showToast(`Delete failed: HTTP ${res.status}`, 'error');
         }
       } catch (err) {
         showToast(`Request failed: ${err.message}`, 'error');
       }
     }
 
-    // AI Query Execution
-    function startTimer() {
-      timerSeconds = 0;
-      const timerEl = document.getElementById('aiTimer');
-      const secondsEl = document.getElementById('aiSeconds');
-      secondsEl.textContent = '0';
-      timerEl.classList.remove('hidden');
+    // --- AI Chat Assistant Implementation ---
+    function renderChatThread() {
+      const thread = document.getElementById('chatMessageThread');
+      const empty = document.getElementById('chatEmptyState');
 
-      timerInterval = setInterval(() => {
-        timerSeconds++;
-        secondsEl.textContent = timerSeconds;
-      }, 1000);
+      if (chatMessages.length === 0) {
+        empty.classList.remove('hidden');
+        thread.querySelectorAll('.chat-msg-row').forEach(el => el.remove());
+        return;
+      }
+
+      empty.classList.add('hidden');
+      thread.querySelectorAll('.chat-msg-row').forEach(el => el.remove());
+
+      chatMessages.forEach((msg, idx) => {
+        const isUser = msg.role === 'user';
+        const msgRow = document.createElement('div');
+        msgRow.className = `chat-msg-row flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1`;
+
+        if (isUser) {
+          msgRow.innerHTML = `
+            <div class="flex items-center gap-1.5 text-[10px] text-app-muted font-mono">
+              <span>You</span>
+              <span>•</span>
+              <span>${msg.time}</span>
+            </div>
+            <div class="max-w-[85%] px-3 py-2 rounded bg-app-elevated border border-app-border text-xs text-app-text whitespace-pre-wrap leading-relaxed">
+              ${escapeHtml(msg.content)}
+            </div>
+          `;
+        } else {
+          msgRow.innerHTML = `
+            <div class="flex items-center gap-1.5 text-[10px] text-app-muted font-mono">
+              <span class="text-app-accent font-medium">Ollama (Qwen2.5)</span>
+              <span>•</span>
+              <span>${msg.time}</span>
+              ${msg.latency ? `<span class="px-1 rounded bg-app-elevated text-app-secondary border border-app-border text-[9px]">${msg.latency}s</span>` : ''}
+            </div>
+            <div class="max-w-[92%] px-3 py-2.5 rounded bg-app-surface border border-app-border text-xs text-app-text leading-relaxed group relative">
+              <div class="whitespace-pre-wrap font-sans text-xs text-app-text">${escapeHtml(msg.content)}</div>
+              <div class="pt-2 mt-2 border-t border-app-border/60 flex items-center justify-between text-[10px] text-app-muted">
+                <span class="font-mono text-app-success">200 OK</span>
+                <button
+                  type="button"
+                  onclick="copyToClipboard(chatMessages[${idx}].content, 'Response copied')"
+                  class="hover:text-app-text font-mono flex items-center gap-1 transition-colors"
+                >
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }
+
+        thread.appendChild(msgRow);
+      });
+
+      // Auto scroll to bottom
+      thread.scrollTop = thread.scrollHeight;
     }
 
-    function stopTimer() {
-      if (timerInterval) clearInterval(timerInterval);
-    }
+    // Send AI Message
+    async function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('chatSendBtn');
+      const genRow = document.getElementById('chatGeneratingRow');
+      const timerEl = document.getElementById('chatTimerSeconds');
 
-    function addToHistory(prompt, response) {
-      queryHistory.unshift({ prompt, response, time: new Date().toLocaleTimeString() });
-      if (queryHistory.length > 5) queryHistory.pop();
-
-      const container = document.getElementById('aiHistoryContainer');
-      const list = document.getElementById('aiHistoryList');
-      const count = document.getElementById('aiHistoryCount');
-
-      container.classList.remove('hidden');
-      count.textContent = queryHistory.length;
-
-      list.innerHTML = queryHistory.map((item, idx) => `
-        <button
-          type="button"
-          onclick="restoreHistory(${idx})"
-          class="text-left px-2 py-1 rounded bg-app-elevated/60 hover:bg-app-elevated border border-app-border text-[11px] text-app-secondary hover:text-app-text truncate transition-colors flex items-center justify-between"
-        >
-          <span class="truncate">${escapeHtml(item.prompt)}</span>
-          <span class="text-[10px] text-app-muted font-mono shrink-0 ml-2">${item.time}</span>
-        </button>
-      `).join('');
-    }
-
-    window.restoreHistory = function(idx) {
-      const item = queryHistory[idx];
-      if (!item) return;
-      document.getElementById('aiPrompt').value = item.prompt;
-      document.getElementById('aiResponseText').textContent = item.response;
-      document.getElementById('aiEmpty').classList.add('hidden');
-      document.getElementById('aiResponseContainer').classList.remove('hidden');
-    };
-
-    document.getElementById('aiForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const promptInput = document.getElementById('aiPrompt');
-      const btn = document.getElementById('askAiBtn');
-      const loading = document.getElementById('aiLoading');
-      const empty = document.getElementById('aiEmpty');
-      const container = document.getElementById('aiResponseContainer');
-      const responseText = document.getElementById('aiResponseText');
-
-      const prompt = promptInput.value.trim();
+      const prompt = input.value.trim();
       if (!prompt) return;
 
-      btn.disabled = true;
-      empty.classList.add('hidden');
-      container.classList.add('hidden');
-      loading.classList.remove('hidden');
-      startTimer();
+      // Append user message immediately
+      const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      chatMessages.push({ role: 'user', content: prompt, time: now });
+      renderChatThread();
+      input.value = '';
+
+      // Start Thinking Timer
+      sendBtn.disabled = true;
+      genRow.classList.remove('hidden');
+      chatTimerSeconds = 0;
+      timerEl.textContent = '0';
+      chatTimerInterval = setInterval(() => {
+        chatTimerSeconds++;
+        timerEl.textContent = chatTimerSeconds;
+      }, 1000);
 
       try {
-        const res = await fetch('/ask', {
+        const res = await authFetch('/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt })
@@ -679,56 +903,75 @@
 
         if (res.ok) {
           const data = await res.json();
-          const answer = data.response || '(Empty response)';
-          responseText.textContent = answer;
-          loading.classList.add('hidden');
-          container.classList.remove('hidden');
-          addToHistory(prompt, answer);
-          showToast(`Inference completed in ${timerSeconds}s`);
+          const answer = data.response || '(Empty response from Ollama)';
+          chatMessages.push({
+            role: 'assistant',
+            content: answer,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+            latency: chatTimerSeconds
+          });
+          renderChatThread();
+          showToast(`Inference completed in ${chatTimerSeconds}s`);
         } else {
           const err = await res.text();
           throw new Error(err || `HTTP ${res.status}`);
         }
       } catch (err) {
-        loading.classList.add('hidden');
-        empty.classList.remove('hidden');
-        showToast(`AI execution failed: ${err.message}`, 'error');
+        chatMessages.push({
+          role: 'assistant',
+          content: `⚠️ Error executing query: ${err.message}`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          latency: null
+        });
+        renderChatThread();
+        showToast(`AI request failed: ${err.message}`, 'error');
       } finally {
-        stopTimer();
-        btn.disabled = false;
+        clearInterval(chatTimerInterval);
+        genRow.classList.add('hidden');
+        sendBtn.disabled = false;
+        input.focus();
       }
+    }
+
+    // Chat Form Submit
+    document.getElementById('chatForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      sendChatMessage();
     });
 
-    // Shortcut: Ctrl + Enter to submit AI form
-    document.getElementById('aiPrompt').addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    // Enter to Send, Shift+Enter for new line
+    document.getElementById('chatInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        document.getElementById('aiForm').requestSubmit();
+        sendChatMessage();
       }
     });
 
-    // Quick chips handler
+    // Clear Chat
+    document.getElementById('clearChatBtn').addEventListener('click', () => {
+      if (chatMessages.length === 0) return;
+      chatMessages = [];
+      renderChatThread();
+      showToast('Chat history cleared');
+    });
+
+    // Quick Prompt Chips
     document.querySelectorAll('.quick-chip').forEach(btn => {
       btn.addEventListener('click', () => {
-        const promptInput = document.getElementById('aiPrompt');
-        promptInput.value = btn.textContent.trim();
-        promptInput.focus();
+        const input = document.getElementById('chatInput');
+        input.value = btn.textContent.trim();
+        input.focus();
       });
     });
 
-    // Copy to clipboard helper
+    // --- Global Helpers ---
     window.copyToClipboard = function(text, successMsg = 'Copied to clipboard') {
       if (!text) return;
       navigator.clipboard.writeText(text);
       showToast(successMsg);
     };
 
-    document.getElementById('copyAiBtn').addEventListener('click', () => {
-      const text = document.getElementById('aiResponseText').textContent;
-      copyToClipboard(text, 'Response copied');
-    });
-
-    // Global keyboard shortcut: 'R' to refresh
+    // Keyboard shortcut 'R' to refresh table
     window.addEventListener('keydown', (e) => {
       if (e.key === 'r' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
         e.preventDefault();
@@ -737,6 +980,50 @@
     });
 
     document.getElementById('refreshUsersBtn').addEventListener('click', fetchUsers);
+
+    // --- Authentication UI Handlers ---
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const btn = document.getElementById('loginSubmitBtn');
+      const errAlert = document.getElementById('authErrorMsg');
+      const errText = document.getElementById('authErrorText');
+
+      btn.disabled = true;
+      errAlert.classList.add('hidden');
+
+      try {
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          localStorage.setItem('jwt_token', data.token);
+          document.getElementById('authOverlay').classList.add('hidden');
+          showToast('Authenticated as ' + username);
+          fetchUsers();
+        } else {
+          const err = await res.json().catch(() => ({}));
+          errText.textContent = err.error || 'Invalid credentials (401 Unauthorized)';
+          errAlert.classList.remove('hidden');
+        }
+      } catch (err) {
+        errText.textContent = `Network error: ${err.message}`;
+        errAlert.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('jwt_token');
+      document.getElementById('authOverlay').classList.remove('hidden');
+      showToast('Signed out successfully');
+    });
 
     function escapeHtml(str) {
       return String(str)
@@ -747,8 +1034,14 @@
         .replace(/'/g, '&#039;');
     }
 
-    // Initial load
-    fetchUsers();
+    // --- Initial Auth Check & Boot ---
+    const initialToken = localStorage.getItem('jwt_token');
+    if (!initialToken) {
+      document.getElementById('authOverlay').classList.remove('hidden');
+    } else {
+      document.getElementById('authOverlay').classList.add('hidden');
+      fetchUsers();
+    }
   </script>
 </body>
 </html>

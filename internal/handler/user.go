@@ -152,16 +152,35 @@ func (h *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func NewRouter(h *UserHandler, aiH *AIHandler, m *middleware.Metrics, staticFS ...fs.FS) http.Handler {
+func NewRouter(
+	h *UserHandler,
+	aiH *AIHandler,
+	authH *AuthHandler,
+	m *middleware.Metrics,
+	authMW *middleware.AuthMiddleware,
+	staticFS ...fs.FS,
+) http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /users", h.CreateUser)
-	mux.HandleFunc("GET /users/{id}", h.GetUser)
-	mux.HandleFunc("PUT /users/{id}", h.UpdateUser)
-	mux.HandleFunc("DELETE /users/{id}", h.DeleteUser)
-	mux.HandleFunc("GET /users", h.ListUsers)
+
+	wrapAuth := func(handlerFunc http.HandlerFunc) http.Handler {
+		if authMW != nil {
+			return authMW.Wrap(handlerFunc)
+		}
+		return handlerFunc
+	}
+
+	if authH != nil {
+		mux.HandleFunc("POST /login", authH.Login)
+	}
+
+	mux.Handle("POST /users", wrapAuth(h.CreateUser))
+	mux.Handle("GET /users/{id}", wrapAuth(h.GetUser))
+	mux.Handle("PUT /users/{id}", wrapAuth(h.UpdateUser))
+	mux.Handle("DELETE /users/{id}", wrapAuth(h.DeleteUser))
+	mux.Handle("GET /users", wrapAuth(h.ListUsers))
 
 	if aiH != nil {
-		mux.HandleFunc("POST /ask", aiH.Ask)
+		mux.Handle("POST /ask", wrapAuth(aiH.Ask))
 	}
 
 	for _, f := range staticFS {

@@ -52,11 +52,13 @@ func main() {
 
 	dbClient := dynamodb.NewFromConfig(cfg)
 	metrics := middleware.NewMetrics()
+	authMiddleware := middleware.NewAuthMiddleware()
+	authHandler := handler.NewAuthHandler()
 	userRepo := dynamodbRepo.NewUserRepository(dbClient, "Users")
 	userHandler := handler.NewUserHandler(userRepo)
 	ollamaClient := ai.NewOllamaClient(ollamaURL, "qwen2.5:3b", nil)
 	aiHandler := handler.NewAIHandler(ollamaClient)
-	router := handler.NewRouter(userHandler, aiHandler, metrics, web.Files)
+	router := handler.NewRouter(userHandler, aiHandler, authHandler, metrics, authMiddleware, web.Files)
 
 	srv := &http.Server{
 		Addr:         ":8080",

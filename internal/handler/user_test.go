@@ -406,7 +406,7 @@ func TestNewRouter(t *testing.T) {
 		},
 	})
 	m := middleware.NewMetrics()
-	router := NewRouter(h, aiH, m)
+	router := NewRouter(h, aiH, nil, m, nil)
 	require.NotNil(t, router)
 
 	// Test GET /users
@@ -447,7 +447,7 @@ func TestNewRouter_WithStaticFS(t *testing.T) {
 		},
 	}
 
-	router := NewRouter(h, nil, m, testFS)
+	router := NewRouter(h, nil, nil, m, nil, testFS)
 	require.NotNil(t, router)
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -456,4 +456,27 @@ func TestNewRouter_WithStaticFS(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.Contains(t, rec.Body.String(), "Dashboard")
+}
+
+func TestNewRouter_WithAuth(t *testing.T) {
+	mockRepo := &MockUserRepository{}
+	h := NewUserHandler(mockRepo)
+	authH := NewAuthHandler()
+	authMW := middleware.NewAuthMiddleware()
+	m := middleware.NewMetrics()
+
+	router := NewRouter(h, nil, authH, m, authMW)
+	require.NotNil(t, router)
+
+	// Protected GET /users without token -> 401
+	req := httptest.NewRequest(http.MethodGet, "/users", nil)
+	rec := httptest.NewRecorder()
+	router.ServeHTTP(rec, req)
+	assert.Equal(t, http.StatusUnauthorized, rec.Code)
+
+	// Public POST /login -> 200
+	loginReq := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBufferString(`{"username":"admin","password":"admin"}`))
+	loginRec := httptest.NewRecorder()
+	router.ServeHTTP(loginRec, loginReq)
+	assert.Equal(t, http.StatusOK, loginRec.Code)
 }

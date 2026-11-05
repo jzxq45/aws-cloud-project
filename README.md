@@ -67,6 +67,7 @@ flowchart TD
 
 ## ✨ Key Features
 
+- **JWT Authentication:** Strict Bearer token middleware (`github.com/golang-jwt/jwt/v5`) guarding all data mutation and AI endpoints, with configurable `JWT_SECRET` and seamless login flow.
 - **Embedded Web Console (`//go:embed`):** Single-binary distribution with zero external runtime dependencies. Serves a high-performance, dark-mode developer workbench on `GET /` inspired by Linear and Vercel.
 - **Clean Architecture & Dependency Injection:** Complete inversion of control. Handlers interact solely with interfaces (`UserRepository`, `LLMClient`, `DynamoDBAPI`), guaranteeing unit testability and maintainability without global state.
 - **Auto-generated UUIDs:** Server-side UUID v4 generation via `github.com/google/uuid` following REST best practices (client ID is optional), returning the newly created resource with `201 Created`.
@@ -112,11 +113,25 @@ docker compose exec ollama ollama pull qwen2.5:3b
 ### 0. Web Workbench Dashboard (`GET /`)
 Open `http://localhost:8080` in your web browser to access the embedded Linear/Vercel-inspired developer console for visual user CRUD, real-time search, and AI assistant prompt execution.
 
-### 1. Create User (`POST /users`)
-*ID is optional; if omitted, a UUID v4 is automatically generated:*
+### 1. Authenticate & Obtain JWT (`POST /login`)
+```bash
+curl -X POST http://localhost:8080/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin", "password":"admin"}'
+```
+*Response (`200 OK`):*
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+### 2. Create User (`POST /users`)
+*Requires `Authorization: Bearer <token>` header:*
 ```bash
 curl -X POST http://localhost:8080/users \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your_jwt_token>" \
   -d '{"name":"Senior Engineer", "email":"senior@cloud.local"}'
 ```
 *Response (`201 Created`):*
@@ -128,9 +143,10 @@ curl -X POST http://localhost:8080/users \
 }
 ```
 
-### 2. Get User By ID (`GET /users/{id}`)
+### 3. Get User By ID (`GET /users/{id}`)
 ```bash
-curl -X GET http://localhost:8080/users/usr-101
+curl -X GET http://localhost:8080/users/usr-101 \
+  -H "Authorization: Bearer <your_jwt_token>"
 ```
 *Response (`200 OK`):*
 ```json
